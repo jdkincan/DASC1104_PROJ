@@ -20,7 +20,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_cache$", "\\.knit\\.md$", "\\.utf8\
     url = "https://twitter.com/rstudio"
 [[menu.main]]
     name = "Resume"
-    url = "/resume/Jack-Kincannon.pdf"
+    url = "resume/Jack-Kincannon.pdf"
 
 [params]
     description = "A website built through Hugo and blogdown."
