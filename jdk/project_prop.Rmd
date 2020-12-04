@@ -1,0 +1,91 @@
+---
+title: "Project Proposal"
+author: "Jack Kincannon"
+date: "12/3/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(here)
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+library(patchwork)
+library(TTR)
+library(tinytex)
+```
+
+# Blog Link
+
+My blog is available at https://jdkincan.netlify.app/
+```{r, echo = FALSE, message = FALSE}
+dat1 <- read_csv(here("data", "blkjckhands.csv"))
+dat2 <- read_csv(here("data", "all_stocks_5yr.csv"))
+dat3 <- read_csv(here("data", "nba_shots_2010.csv"))
+dat4 <- read_csv(here("data", "nba_shots_2019.csv"))
+```
+
+# Dataset Exploration
+
+## Blackjack Analysis
+
+```{r}
+glimpse(dat1)
+```
+
+For this project, I am examining a dataset that contains 90,000 blackjack hands with 6 players per hand. The data is stored in the blkjckhands.csv and it was downloaded from a repository on Kaggle that is linked below. The data consists of 898,078 observations of 21 variables. The variables X1 and PlayerNo describe the 6 players present in each hand, they are dbl numeric and a character string respectively. The variables: card1, card2, card3, card4, card5, dealcard1, dealcard2, dealcard3, dealcard4, and dealcard5 describe the numeric value of the card dealt. The number at the end of the variables corresponds to which card was dealt first in the sequence, if no card is dealt 0 takes the place of NA. Variables sumofcards and sumofdeal are numerics which total the value of the cards dealt to each player and the dealer, per hand, respectively. Blkjck is a simple character string with two unique values 
+nowin and Win. Winloss describes each players outcome simplistically per hand. Character values Loss and Win are the two options. Variables plybustbeat and dlbustbeat describe the hand outcome in more detail with unique values Beat, Plwin, Bust, DlBust, and Push for plybustbeat with Dlwin, Beat, PlBust, Bust, and Push for dlbustbeat. Each of these variables are class character. Plwinamt and dlwinamt describe the hand outcome monetarily. These values are numeric and a base bet of $10 is assumed for each player each hand. The final variable play2cardsum is interesting. It describes the starting position from which blackjack players make their decision. It represents the sum of card1 and card2 numerically.
+
+Initial exploration and experience makes me look towards dealcard1 and ply2cardsum as two potential explanatory variables. This dataset is a wealth of information and I am sure that I will be able to analyze any angle of blackjack strategy and probability. 
+
+- Question 1: First, I want to see what the win probabilities are for a player based on the hand they are dealt, and see how these probabilities change through the course of a hand i.e when the dealers up card is factored in. For experimentation summary statistics will be calculated for critical values, which will then be visualized and compared using ggplot. 
+
+- Question 2: Second, based on these probabilities I intend to calculate an optimal strategy. This strategy   To investigate this, tables that describe the probability of a win will be produced, visualizations will be produced that track the difference between an optimal and sub-optimal strategy. 
+
+- Question 3: Third, now that we know the best way to play the game, how can we maximize the expected value and profit of a given player? I will utilize various mathematical betting sequences such as the as the Fibonacci to determine the answer to this question. Visualizations will analyze how large of a difference a true understanding of a game makes in outcomes. 
+
+The overarching purpose of this analysis is to show how optimized strategy is essential to making the most out of any market or game. I was inspired by Micheal Lewis books Moneyball and The Undoing Project, which are based around this idea.
+
+https://www.kaggle.com/mojocolors/900000-hands-of-blackjack-results
+
+
+## S&P 500 Analysis
+
+```{r}
+glimpse(dat2)
+```
+For this analysis, I am examining a dataset that contains 5 years worth of data from the S&P 500 from 2013-2018. The data is stored in all_stocks_5yr.csv and it was downloaded from a repository on Kaggle that is linked below. The data consists of 618,445 observations of 7 variables. The variable date represents the trading day in question and is stored as a date. Variables open, high, low, and close represent the price in USD of the stock on one trading day. They are all stored as numeric values. Open is the price at market open, close at market close, and high and low represent the range of prices on that day. The variable volume represents the amount of shares bought and sold per ticker per day, it is a numeric. Name represents the stock ticker symbol, they are stored as characters and there are 506 unique values. 
+
+Through initial exploration, I stumbled onto the package TTR. It is a wealth of computational finance functions and information. I hope to use the tools available in this package to draw insights that would have previously been beyond my reach. For the purposes of this analysis I will select one ticker to analyze vs the market, and my starting capital will be $100,000. 
+
+- Question 1: How can I predict the direction of stock price? First, I plan on using TTR to create new variables RSI, Bollinger Bands, Momentum, Volatility, and MACD. These variables will all be numeric values. These variables are all indicators used in financial analysis and fall into four categories: trend, momentum, volume, and volatility. I will examine these indicators, their meanings, and what value they bring to the table. For visualization I will plot the indicator values over time, as well as the profit signals. 
+
+- Question 2: Second, based on these probabilities of profit what is the best strategy? This strategy will essentially combine all the buying and selling signals of the chosen indicators. I can then create visualizations that show when the optimal time to buy and sell are. 
+
+- Task 3: Lastly, I hope log the individual transactions that will take place. I will be using an all-in stop-loss strategy where 100% of my portfolio value is invested each time a trade is placed. If I can muster it, I will create a function that takes a date range as an input and outputs transactions, and profit.
+
+The overarching purpose of this analysis is to build a foundation for algorithmic trading. I hope to be able to build a live data algorithm by graduation and I believe this is an important step. 
+
+https://www.kaggle.com/camnugent/sandp500
+
+
+## NBA Shot Analysis
+
+```{r}
+glimpse(dat3)
+glimpse(dat4)
+```
+
+For this project, my final dataset contains over 400,000 individual shots taken in the National Basketball Association for the 2009-2010, and 2018-2019. The data is stored in the nba_shots_2010.csv and the nba_shots_2019.csv. I compiled this data using an api based web scraper that uses the requests and json modules in python. The link to the web scraper template that I used is included below. The 2010 data consists of 200,966 observations of 24 variables. The 2019 data consists of 219,458 observations and 24 variables. The variables for each dataset are the same. GRID_TYPE is negligible, it is a class character with one unique value. GAME_ID, GAME_EVENT_ID, PLAYER_ID, and TEAM_ID are all either characters or numeric with the purpose of identifying some individual or event. PLAYER_NAME and TEAM_NAME are more useful versions of the ID variables, being stored as human readable characters. PERIOD identifies the current period when a given shot was taken, it is stored as a numeric. MINUTES_REMAINING and SECONDS_REMAINING in conjunction tell the amount of time remaining when the shot was taken and are stored as numerics. EVENT_TYPE tells whether the shot was a Missed Shot or a Made Shot and is stored as a character string. ACTION_TYPE describes the type of shot being taken, there are 45 different types of shots stored in the data, and they are stored as characters. Wow! SHOT_TYPE tells us whether a shot was a 3PT Field Goal, or a 2PT Field Goal stored as characters. SHOT_ZONE_BASIC, SHOT_ZONE_AREA, and SHOT_ZONE_DISTANCE quantify where the shot was taken in 7, 6, and 5 zones respectively. Stored as characters. LOC_X and LOC_Y are powerful variables that plot a shot's location on a coordinate plane. They are numeric, as are SHOT_ATTEMPTED_FLAG, and SHOT_MADE_FLAG which are 0 or 1 and indicate the same information as other statistics. GAME_DATE, HTM, and VTM give information about the game where the shot was taken, and are stored as a numeric and two characters respectively.  
+
+- Task 1: First, I will detail the process of data allocation. I will then examine the strategy shakeup beautifully explained by Kirk Goldsberry in his book Sprawlball by examining relationships such as FGP over distance from basket, points per shot over distance from basket, and the change in shooting distributions from 2009-2019. Ggplot will be used in conjunction with cowplot for visualizations. 
+
+- Task 2: Second, after giving the above relationships a good look, I will attempt to develop my very own basketball statistics. One statistic will be based solely on a teams efficiency in executing the Sprawlball strategy. It will resolve to a simple numeric value that can be evaluated on a continuous scale. The other statistic will attempt to predict outcomes at a better than random percentage (Tested by hypothesis test). I will do this by combining various elements such as points per possession, average FGP, average shot distance, and shot type. 
+
+- Task 3: If possible, I hope to use my twitter developer access to build a twitter bot. This bot will interact with the twitter API and live web data to publish when a Sprawlball inspired event occurs. If my statistic evaluates to higher than a certain value the bot will automatically publish a tweet describing the game in question. 
+
+The overarching purpose of this analysis is to again visited optimized strategy and its benefits. 
+
+https://datavizardry.com/2020/01/28/nba-shot-charts-part-1/
