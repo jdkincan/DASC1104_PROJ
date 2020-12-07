@@ -1,0 +1,153 @@
+---
+output: 
+  pdf_document:
+    latex_engine: pdflatex
+    keep_tex: false
+    dev: cairo_pdf
+    template: svm-latex-resume.tex
+
+title: "Résumé"
+author: "Jack Kincannon"
+date: "12/2/2020 -- Update before applying"
+
+fontawesome: TRUE
+geometry: margin=1in
+# geometry: "top=.5in, left =.5in, right=.5in, bottom=.75in"
+
+# How can we get a hold of you?
+email: jdkincan@uark.edu
+phone: 479-222-8082
+location: "110 N Stadium, Fayetteville, AR"
+github: jdkincan
+web: "jdkincan.netlify.app"
+twitter: "@jackkincannon"
+linkedin: "jack-kincannon-66896219b"
+mainfont: cochineal
+sansfont: Fira Sans
+# monofont: Fira Code # I want to use this, but seems to choke on @
+urlcolor: blue
+fontsize: 11pt
+
+includephoto: TRUE
+myphoto: P1000794edit.jpg
+# shift: "7in,-.25in" # this is default
+photobigness: 1.75cm
+# photozoom: ".2\textwidth" # this is default
+---
+
+
+<!-- Read more about Pandoc's [fenced_divs](https://pandoc.org/MANUAL.html#extension-fenced_divs) syntax -->
+
+:::::: {.columns}
+::: {.column width="60%" data-latex="{0.60\textwidth}"}
+
+# Professional Experience
+
+## __Tutor (Current)__
+
+Do College Better --- Fayetteville, Arkansas
+
+- Teach various subjects including: Data Analysis,\   
+Business Law, and Finite Mathematics.
+- Maintain a growth mindset toward student\   
+learning and teaching practice.
+- Design and facilitates differentiated and\   
+personalized learning goals and activities.
+
+## __Census Enumerator (2020)__
+
+US 2020 Census --- Fayetteville, Arkansas
+
+- Trained and sworn in as a federal employee, aware\   
+of all relevant statues and regulations.
+- Worked in a fluid environment that prioritized\   
+teamwork and communication.
+
+## __Caretaker (2019)__
+
+FS Athletic Club --- Fort Smith, Arkansas
+
+- Maintained and operated equipment for a 7-acre\   
+athletic complex.
+- Self-paced work environment where reliability\   
+and trustworthiness were key. 
+
+# Leadership and Community Involvement  
+
+## __Communications Director (Current)__
+
+Sigma Alpha Epsilon Arkansas Alpha Upsilon
+
+- Manage all fraternity related public relations,\   
+shedding a light on positives attributes of fraternity life.
+- Facilitated online Formal Rush 2020 through Zoom,\   
+commended by Director of Greek Life.
+- Developed an all-new website to promote the fraternity and provide a central information source.
+
+:::
+::: {.column width="2%" data-latex="{0.02\textwidth}"}
+\ 
+<!-- an empty div with an empty character to serve as a column sep -->
+:::
+:::::: {.column width="38%" data-latex="{0.38\textwidth}"}
+
+# Education
+
+## __B.S. in Data Science__
+
+## __Finance Minor__\        
+
+University of Arkansas --- Fayetteville
+_Honors Program_ GPA 4.0
+
+# Technical Skills
+
+- Programming: Python, R, TeX,\     
+PowerShell, Bash, RStudio, Visual Studio Code, and Microsoft Office Suite.
+- Data: importation, manipulation, transformation, visualization, and communication.
+- Managing Project Environments
+- Advanced Quantitative Analysis
+- Complex Problem Solving
+
+# Awards and Distinctions
+
+- Chancellor’s Community\   
+Scholarship 
+- Governor’s Distinguished\   
+Scholarship
+- Chancellor’s List
+- DAR Good Citizen
+
+# Community Involvement
+
+## __Sack Lunch Volunteer (Current)__ 
+
+- Prepare and serve meals to those in need.
+- Adapted to COVID-19 protocols and continued to help serve my hometown.
+
+:::
+::::::
+
+<!-- If you want another page, this is how you can do it... -->
+
+<!-- \newpage
+
+:::::: {.columns}
+::: {.column width="60%" data-latex="{0.60\textwidth}"}
+
+
+
+
+:::
+::: {.column width="2%" data-latex="{0.02\textwidth}"}
+\
+
+
+:::
+:::::: {.column width="38%" data-latex="{0.38\textwidth}"}
+
+
+:::
+::::::
+
+-->

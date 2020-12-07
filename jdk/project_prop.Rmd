@@ -86,6 +86,6 @@ For this project, my final dataset contains over 400,000 individual shots taken 
 
 - Task 3: If possible, I hope to use my twitter developer access to build a twitter bot. This bot will interact with the twitter API and live web data to publish when a Sprawlball inspired event occurs. If my statistic evaluates to higher than a certain value the bot will automatically publish a tweet describing the game in question. 
 
-The overarching purpose of this analysis is to again visited optimized strategy and its benefits. 
+The overarching purpose of this analysis is to again visit optimized strategy and its benefits. 
 
 https://datavizardry.com/2020/01/28/nba-shot-charts-part-1/

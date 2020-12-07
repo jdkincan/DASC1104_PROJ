@@ -1,0 +1,102 @@
+---
+title: "blkjck_stock_preanalysis"
+author: "Jack Kincannon"
+date: "12/3/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(patchwork)
+library(TTR)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r, message=FALSE}
+dat1 <- read_csv("data/blkjckhands.csv")
+dat2 <- read_csv("data/all_stocks_5yr.csv")
+```
+
+```{r}
+glimpse(dat1)
+```
+
+```{r}
+# create new binary winloss variables 
+
+# summary statistics for interesting values ply2cardsum/card1/card2/dealcard1/dealcard2/winloss/blkjack
+
+# first vis
+# x needs to be play2cardsum/sumofcards and y is percentage of win/loss
+
+# second vis
+# x is dealcard1 and y is winloss/dlbustbeat
+
+# third vis 
+# ply2cardsum y is percent plybustbeat
+
+# plot blackjacks for fun 
+
+```
+
+
+```{r}
+glimpse(dat2)
+```
+## Stock Analysis
+
+```{r}
+# pick stock and find S&P total value
+
+# plot some summary stats for stock/S&P price/volume/TTR
+```
+
+```{r,  echo=TRUE}
+open1 <- na.omit(dat2$open)
+close1 <- na.omit(dat2$close)
+high1 <- na.omit(dat2$high)
+low1 <- na.omit(dat2$low)
+
+# dat3 <- data.frame(high = high1, low = low1, close = close1, check.rows = FALSE)
+# attempt at making a high-low-close df for BBands
+
+rsi_dat <- dat2 %>%
+  summarise(rsi = RSI(open1, n = 14, maType = "SMA"))
+
+volatility_dat <- dat2 %>%
+  summarise(vol = volatility(close1, n = 10, calc = "close", N = 260))
+
+#bbands_dat <- dat2 %>%
+  #select(high, low, close)
+
+bbands <- BBands(close1, n = 20, maType = SMA)
+# try to compute bbands with high-low-close
+
+momentum_dat <- dat2 %>%
+  summarise(momentum(close1, n = 1))
+# perhaps compare long momentum and short momentum in some way?
+
+macd_dat <- dat2 %>%
+  summarise(macd = MACD(open1, nFast=12, nSlow=26, nSig=9, maType= "SMA", percent = FALSE))
+```
+
+```{r}
+# identify and explain all indicators 
+
+# q1 part 2 
+# plot all indicators over full time period
+
+# describe signals and draw circles/lines on plot to show 
+
+# DONT DO Q2 twice double check PROJ PROPOSAL
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
