@@ -12,4 +12,326 @@ featuredImage: = "blkjck.png"
 <script src="index_files/anchor-sections/anchor-sections.js"></script>
 
 
-<p>Placeholder for blkjck analysis</p>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Blackjack is known around the world as a timeless casino game. The rules are fairly simple, but the depth is shocking. Someone can play for years and still not have seen all the possibilities at a table. However, just like any other card game, basic probabilities can be calculated, and therefore an optimal strategy can be determined. In this analysis, I hope to showcase my data science skill by visualizing blackjack, and its infinite probabilities. Additionally, I hope to provide reasoning for why blackjack is played with a predetermined strategy.</p>
+<div id="core-questions" class="section level2">
+<h2>Core Questions</h2>
+<ol style="list-style-type: decimal">
+<li>What is the expected value of a blackjack hand?</li>
+<li>When is probability in the player’s favor?</li>
+<li>How can a player maximize their expected value?</li>
+</ol>
+<pre class="r"><code>dat1 &lt;- read_csv(&quot;data/blkjckhands.csv&quot;) </code></pre>
+<pre><code>## Warning: Missing column names filled in: &#39;X1&#39; [1]</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_double(),
+##   PlayerNo = col_character(),
+##   blkjck = col_character(),
+##   winloss = col_character(),
+##   plybustbeat = col_character(),
+##   dlbustbeat = col_character()
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
+<pre><code>## Warning: 1 parsing failure.
+##    row col   expected    actual                   file
+## 898078  -- 21 columns 5 columns &#39;data/blkjckhands.csv&#39;</code></pre>
+</div>
+</div>
+<div id="exploratory-data-analysis" class="section level1">
+<h1>Exploratory Data Analysis</h1>
+<pre class="r"><code>glimpse(dat1)</code></pre>
+<pre><code>## Observations: 898,078
+## Variables: 21
+## $ X1          &lt;dbl&gt; 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, …
+## $ PlayerNo    &lt;chr&gt; &quot;Player1&quot;, &quot;Player2&quot;, &quot;Player3&quot;, &quot;Player4&quot;, &quot;Player5&quot;, &quot;P…
+## $ card1       &lt;dbl&gt; 7, 10, 9, 2, 10, 6, 10, 3, 10, 9, 10, 3, 10, 9, 5, 10, 2,…
+## $ card2       &lt;dbl&gt; 10, 9, 8, 10, 2, 1, 4, 10, 2, 6, 4, 5, 2, 10, 1, 10, 9, 5…
+## $ card3       &lt;dbl&gt; 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 2, 0, 0, 10, 0, 1, 0, 0,…
+## $ card4       &lt;dbl&gt; 0, 0, 0, 5, 5, 10, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 5,…
+## $ card5       &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+## $ sumofcards  &lt;dbl&gt; 17, 19, 17, 17, 17, 25, 14, 13, 12, 15, 14, 14, 12, 19, 1…
+## $ dealcard1   &lt;dbl&gt; 10, 10, 10, 10, 10, 10, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, …
+## $ dealcard2   &lt;dbl&gt; 8, 8, 8, 8, 8, 8, 4, 4, 4, 4, 4, 4, 6, 6, 6, 6, 6, 6, 8, …
+## $ dealcard3   &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 0, …
+## $ dealcard4   &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,…
+## $ dealcard5   &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+## $ sumofdeal   &lt;dbl&gt; 18, 18, 18, 18, 18, 18, 23, 23, 23, 23, 23, 23, 26, 26, 2…
+## $ blkjck      &lt;chr&gt; &quot;nowin&quot;, &quot;nowin&quot;, &quot;nowin&quot;, &quot;nowin&quot;, &quot;nowin&quot;, &quot;nowin&quot;, &quot;no…
+## $ winloss     &lt;chr&gt; &quot;Loss&quot;, &quot;Win&quot;, &quot;Loss&quot;, &quot;Loss&quot;, &quot;Loss&quot;, &quot;Loss&quot;, &quot;Win&quot;, &quot;Wi…
+## $ plybustbeat &lt;chr&gt; &quot;Beat&quot;, &quot;Plwin&quot;, &quot;Beat&quot;, &quot;Beat&quot;, &quot;Beat&quot;, &quot;Bust&quot;, &quot;DlBust&quot;…
+## $ dlbustbeat  &lt;chr&gt; &quot;Dlwin&quot;, &quot;Beat&quot;, &quot;Dlwin&quot;, &quot;Dlwin&quot;, &quot;Dlwin&quot;, &quot;PlBust&quot;, &quot;Bu…
+## $ plwinamt    &lt;dbl&gt; 0, 20, 0, 0, 0, 0, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20…
+## $ dlwinamt    &lt;dbl&gt; 10, 0, 10, 10, 10, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+## $ ply2cardsum &lt;dbl&gt; 17, 19, 17, 12, 12, 7, 14, 13, 12, 15, 14, 8, 12, 19, 6, …</code></pre>
+<p>For this project, I am examining a dataset that contains 90,000 blackjack hands with 6 players per hand. The data is stored in the blkjckhands.csv and it was downloaded from a repository on Kaggle that is linked below. The data consists of 898,078 observations of 21 variables. The variables X1 and PlayerNo describe the 6 players present in each hand, they are dbl numeric and a character string respectively. The variables: card1, card2, card3, card4, card5, dealcard1, dealcard2, dealcard3, dealcard4, and dealcard5 describe the numeric value of the card dealt. The number at the end of the variable name corresponds to which card was dealt first in the sequence. If no card is dealt 0 takes the place of NA. Variables sumofcards and sumofdeal are numeric values which total to the value of the cards dealt to each player and the dealer, per hand, respectively. Blkjck is a simple character string with two unique values nowin and win. Winloss describes each players outcome simplistically per hand. Character strings Loss and Win are the two options. Variables plybustbeat and dlbustbeat describe the hand outcome in more detail with unique values Beat, Plwin, Bust, DlBust, and Push for plybustbeat with Dlwin, Beat, PlBust, Bust, and Push for dlbustbeat. Each of these variables are of class character. Plwinamt and dlwinamt describe the hand outcome monetarily. These values are numeric and a base bet of $10 is assumed for each player each hand. The final variable play2cardsum is interesting. It describes the starting position from which players will make their decisions.</p>
+<pre class="r"><code>summary(dat1$ply2cardsum)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##    2.00   12.00   14.00   14.22   18.00   21.00       1</code></pre>
+<pre class="r"><code>ggplot(dat1, aes(ply2cardsum)) +
+  geom_bar() +
+  labs(title = &quot;Frequency of Player Starting Hands&quot;,
+       x = &quot;Player 2 Card Sum&quot;,
+       y = &quot;Frequency&quot;) +
+  scale_x_discrete(limit = 2:21, breaks = 2:21)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>summary(dat1$card1)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   1.000   5.000   8.000   7.126  10.000  11.000</code></pre>
+<pre class="r"><code>ggplot(dat1, aes(card1)) +
+  geom_bar() +
+  labs(title = &quot;Frequency of Player Card 1&quot;,
+       x = &quot;Player Card 1&quot;,
+       y = &quot;Frequency&quot;) +
+  scale_x_discrete(limit = 1:11, breaks = 1:11)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>summary(dat1$dealcard1)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##   1.000   5.000   8.000   7.171  10.000  11.000       1</code></pre>
+<pre class="r"><code>ggplot(dat1, aes(dealcard1)) +
+  geom_bar() +
+  labs(title = &quot;Frequency of Dealer Card 1&quot;,
+       x = &quot;Dealer Card 1&quot;,
+       y = &quot;Frequency&quot;) +
+  scale_x_discrete(limit = 1:11, breaks = 1:11)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>summary(dat1$sumofdeal)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##     8.0    18.0    20.0    20.3    22.0    26.0       1</code></pre>
+<pre class="r"><code>ggplot(dat1, aes(sumofdeal)) +
+  geom_bar() +
+  labs(title = &quot;Frequency of Dealer Card Sum&quot;,
+       x = &quot;Dealer Card Sum&quot;,
+       y = &quot;Frequency&quot;) +
+  scale_x_discrete(limits = 8:26, breaks = 8:26)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>summary(dat1$sumofcards)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##     8.0    17.0    19.0    18.9    21.0    26.0       1</code></pre>
+<pre class="r"><code>ggplot(dat1, aes(sumofcards)) +
+  geom_bar() +
+  labs(title = &quot;Frequency of Player Card Sum&quot;,
+       x = &quot;Player Card Sum&quot;,
+       y = &quot;Frequency&quot;) +
+  scale_x_discrete(limits = 8:26, breaks = 8:26)</code></pre>
+<pre><code>## Warning: Continuous limits supplied to discrete scale.
+## Did you mean `limits = factor(...)` or `scale_*_continuous()`?</code></pre>
+<pre><code>## Warning: Removed 1 rows containing non-finite values (stat_count).</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code>summary(dat1$plwinamt)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##   0.000   0.000  10.000   9.723  20.000  25.000       1</code></pre>
+<pre class="r"><code>summary(dat1$dlwinamt)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##   0.000   0.000   0.000   4.776  10.000  10.000       1</code></pre>
+<p>In a blackjack game, like the one being analyzed, each player receives two cards. Possible values range from 1-11 for each card, and 2-21 for the total hand value. The dealer is also dealt two cards, however one is face down. This forces the player to make a decision based on limited information. The player must choose to hit or stand.* All while playing against the dealer who has a hidden card. Another catch is that the dealer must stand on any 17. The object of the game is to beat the dealer by gaining a hand valued higher than theirs without exceeding 21. Above, I have calculated the summary statistics for important values. The values included will be the basis for my analysis. The trade secrets of blackjack known by players as “The Book” hides in the numbers shown above.</p>
+<p>*Other options that I won’t dive into for purposes of this analysis: double down, split.</p>
+</div>
+<div id="data-analysis" class="section level1">
+<h1>Data Analysis</h1>
+<div id="question-1" class="section level2">
+<h2>Question 1</h2>
+<p>Expected value is a very useful tool for determining the underlying value in a game or market. Blackjack is no different. To calculate expected value multiply the monetary win/loss by the chance that thing happens. Then add up all the individual values to determine your expected value for the game. Below I have calculated the expected value of this blackjack data.</p>
+<pre class="r"><code># percent chance dealer bust
+# percent chance of plwin
+windat &lt;- dat1 %&gt;%
+  filter(plwinamt == 20) %&gt;%
+  summarise(win_count = n()) 
+
+totl_dat &lt;- dat1 %&gt;%
+  summarise(totl_count = n())
+
+win_pct &lt;- max(windat$win_count) / max(totl_dat$totl_count)
+win_pct</code></pre>
+<pre><code>## [1] 0.3865822</code></pre>
+<p>Above is the chance a player wins, without getting a blackjack.</p>
+<pre class="r"><code># percent chance of plpush
+pushdat &lt;- dat1 %&gt;%
+  filter(plwinamt == 10) %&gt;%
+  summarise(push_count = n()) 
+
+totl_dat &lt;- dat1 %&gt;%
+  summarise(totl_count = n())
+
+push_pct &lt;- max(pushdat$push_count) / max(totl_dat$totl_count)
+push_pct</code></pre>
+<pre><code>## [1] 0.09360768</code></pre>
+<p>The percent chance of a push is shown above.</p>
+<pre class="r"><code># percent chance of plloss
+lossdat &lt;- dat1 %&gt;%
+  filter(plwinamt == 0) %&gt;%
+  summarise(loss_count = n()) 
+
+totl_dat &lt;- dat1 %&gt;%
+  summarise(totl_count = n())
+
+loss_pct &lt;- max(lossdat$loss_count) / max(totl_dat$totl_count)
+loss_pct</code></pre>
+<pre><code>## [1] 0.4775966</code></pre>
+<p>The percent chance of a loss is shown above.</p>
+<pre class="r"><code># pct chance of blackjack if win 
+blkjckdat &lt;- dat1 %&gt;%
+  filter(plwinamt == 25) %&gt;%
+  summarise(blkjck_count = n()) 
+
+blkjck_true_pct &lt;- max(blkjckdat$blkjck_count) / max(totl_dat$totl_count)
+blkjck_true_pct</code></pre>
+<pre><code>## [1] 0.04221237</code></pre>
+<p>The chance a player wins, while also receiving a blackjack.</p>
+<pre class="r"><code># calculate expected value
+ex1 &lt;- 15 * blkjck_true_pct
+ex2 &lt;- 10 * win_pct
+ex3 &lt;- -10 * loss_pct
+ex4 &lt;- 0 * push_pct
+
+EV &lt;- ex1 + ex2 +ex3 + ex4
+EV</code></pre>
+<pre><code>## [1] -0.2769581</code></pre>
+<p>By combining the probabilities listed, I calculated the true expected value of this blackjack game. The output represents what a player stands to lose on each hand on average. This is assuming the player bets $10 each time and blackjacks are payed out 3:2.</p>
+<p>If we exclude the probability of a push the house edge can be easily calculated.</p>
+<pre class="r"><code>true_win_pct &lt;- blkjck_true_pct + win_pct 
+house_edge_pct &lt;- loss_pct - true_win_pct 
+house_edge_pct</code></pre>
+<pre><code>## [1] 0.048802</code></pre>
+<p>This chunk calculates the house edge to be just under 5 percent. Which leads perfectly into my next question.</p>
+</div>
+<div id="question-2" class="section level2">
+<h2>Question 2</h2>
+<p>When is probability in the player’s favor?</p>
+<pre class="r"><code># add sumofcards vs pct win/loss
+
+x1 &lt;- c(20, 25)
+
+plhand_count &lt;- dat1 %&gt;%
+  group_by(ply2cardsum) %&gt;%
+  summarise(count = n(), .groups = &quot;keep&quot;)
+  
+plhand_win &lt;- dat1 %&gt;%
+  group_by(ply2cardsum) %&gt;%
+  filter(plwinamt %in% x1) %&gt;%
+  summarise(win_count = n(), .groups = &quot;keep&quot;)
+
+plwin_pct &lt;- plhand_count %&gt;%
+  left_join(plhand_win) %&gt;%
+  summarise(percent_win = win_count / count, .groups = &quot;keep&quot;)</code></pre>
+<pre><code>## Joining, by = &quot;ply2cardsum&quot;</code></pre>
+<pre class="r"><code>plot1 &lt;- ggplot(plwin_pct, aes(ply2cardsum, percent_win * 100)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  labs(title = &quot;Chance of Win vs. 2 Card Sum&quot;, 
+       x = &quot;Player 2 Card Sum&quot;,
+       y = &quot;Player Win Percentage&quot;) +
+  scale_x_discrete(limits = (2:21), breaks = 1:21) +
+  geom_hline(yintercept = 50)</code></pre>
+<pre><code>## Warning: Continuous limits supplied to discrete scale.
+## Did you mean `limits = factor(...)` or `scale_*_continuous()`?</code></pre>
+<pre class="r"><code>plot1</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (position_stack).</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>Here we see that out of 19 possible 2 card sums the player is only favored to win in about 5 of the scenarios. The 19, 20, and 21 are self explanatory, however, the 10 and 11 are interesting. Your probability is good comparatively with the 10 and 11 because of the card value frequency explored in the EDA. A 10 is by far the most likely card to draw, therefore your chances of a high value hand are pretty good.</p>
+<p>Now, the probability of winning based on the dealer’s up card.</p>
+<pre class="r"><code>dlhand_count &lt;- dat1 %&gt;%
+  group_by(dealcard2) %&gt;%
+  summarise(count = n(), .groups = &quot;keep&quot;)
+glimpse(dlhand_count)</code></pre>
+<pre><code>## Observations: 12
+## Variables: 2
+## Groups: dealcard2 [12]
+## $ dealcard2 &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, NA
+## $ count     &lt;int&gt; 15474, 69984, 68370, 68730, 69120, 70188, 68694, 69258, 689…</code></pre>
+<pre class="r"><code>dlhand_win &lt;- dat1 %&gt;%
+  group_by(dealcard2) %&gt;%
+  filter(plwinamt %in% x1) %&gt;%
+  summarise(win_count = n(), .groups = &quot;keep&quot;)
+glimpse(dlhand_win)</code></pre>
+<pre><code>## Observations: 11
+## Variables: 2
+## Groups: dealcard2 [11]
+## $ dealcard2 &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+## $ win_count &lt;int&gt; 8861, 32306, 31662, 31556, 32349, 34617, 35063, 32840, 3055…</code></pre>
+<pre class="r"><code>dlcard_plwin_pct &lt;- dlhand_count %&gt;%
+  left_join(dlhand_win) %&gt;%
+  summarise(percent_win = win_count / count)</code></pre>
+<pre><code>## Joining, by = &quot;dealcard2&quot;</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre class="r"><code>dlcard_plwin_pct</code></pre>
+<pre><code>## # A tibble: 12 x 2
+##    dealcard2 percent_win
+##        &lt;dbl&gt;       &lt;dbl&gt;
+##  1         1       0.573
+##  2         2       0.462
+##  3         3       0.463
+##  4         4       0.459
+##  5         5       0.468
+##  6         6       0.493
+##  7         7       0.510
+##  8         8       0.474
+##  9         9       0.443
+## 10        10       0.382
+## 11        11       0.184
+## 12        NA      NA</code></pre>
+<pre class="r"><code>plot2 &lt;- ggplot(dlcard_plwin_pct, aes(dealcard2, percent_win * 100)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  labs(title = &quot;Chance of Player Win vs. Dealer Up Card&quot;,
+       x = &quot;Dealer Up Card&quot;,
+       y = &quot;Player Win Percentage&quot;) +
+  scale_x_discrete(limits = 1:11, breaks = 1:11) +
+  geom_hline(yintercept = 50)</code></pre>
+<pre><code>## Warning: Continuous limits supplied to discrete scale.
+## Did you mean `limits = factor(...)` or `scale_*_continuous()`?</code></pre>
+<pre class="r"><code>plot2</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (position_stack).</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<pre class="r"><code>dlhand_win &lt;- dat1 %&gt;%
+  group_by(dealcard2) %&gt;%
+  filter(dlwinamt == 10) %&gt;%
+  summarise(win_count = n(), .groups = &quot;keep&quot;)
+glimpse(dlhand_win)</code></pre>
+<pre><code>## Observations: 11
+## Variables: 2
+## Groups: dealcard2 [11]
+## $ dealcard2 &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+## $ win_count &lt;int&gt; 5705, 32062, 31303, 32050, 31781, 30659, 27354, 29794, 3143…</code></pre>
+<pre class="r"><code>dlwin_pct &lt;- dlhand_count %&gt;%
+  left_join(dlhand_win) %&gt;%
+  summarise(percent_win = win_count / count)</code></pre>
+<pre><code>## Joining, by = &quot;dealcard2&quot;</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre class="r"><code>plot3 &lt;- ggplot(dlwin_pct, aes(dealcard2, percent_win *100)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  labs(title = &quot;Chance of Dealer Win vs. Dealer Up Card&quot;,
+       x = &quot;Dealer Up Card&quot;,
+       y = &quot;Dealer Win Percentage&quot;) +
+  scale_x_discrete(limits = 1:11, breaks = 1:11) +
+  geom_hline(yintercept = 50)</code></pre>
+<pre><code>## Warning: Continuous limits supplied to discrete scale.
+## Did you mean `limits = factor(...)` or `scale_*_continuous()`?</code></pre>
+<pre class="r"><code>plot3</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (position_stack).</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<pre class="r"><code># plot4
+# x is dealcard2 and y is dlbustbeat (filter )
+
+# plot5
+# x is ply2cardsum y is percent plybustbeat (filter into different categories)</code></pre>
+</div>
+<div id="question-3" class="section level2">
+<h2>Question 3</h2>
+<p>How can a player maximize their expected value?</p>
+<pre class="r"><code>#Determine hit or stand based on ply2cardsum
+
+#determine hit or stand based on dealcard1
+
+# combine the two, show chart of all possibilities 
+# ply2card sum (or possible hands) == rows and dealcard1 == col</code></pre>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>Conclusion</h1>
+<p>I could answer this now, due to unfortuante experience. However, I will let the data explain itself.</p>
+<p>TBC</p>
+<div id="sources" class="section level2">
+<h2>Sources</h2>
+<p><a href="https://www.kaggle.com/mojocolors/900000-hands-of-blackjack-results" class="uri">https://www.kaggle.com/mojocolors/900000-hands-of-blackjack-results</a></p>
+</div>
+</div>

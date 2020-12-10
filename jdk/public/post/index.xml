@@ -13,7 +13,7 @@
       <pubDate>Tue, 08 Dec 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/12/08/blackjack-optimized/</guid>
-      <description>Placeholder for blkjck analysis</description>
+      <description>Introduction Blackjack is known around the world as a timeless casino game. The rules are fairly simple, but the depth is shocking. Someone can play for years and still not have seen all the possibilities at a table. However, just like any other card game, basic probabilities can be calculated, and therefore an optimal strategy can be determined. In this analysis, I hope to showcase my data science skill by visualizing blackjack, and its infinite probabilities.</description>
     </item>
     
     <item>
@@ -22,7 +22,7 @@
       <pubDate>Tue, 08 Dec 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/12/08/nba-evolution/</guid>
-      <description>Introduction  EDA shots10 &amp;lt;- read_csv(&amp;quot;data/nba_shots_2010.csv&amp;quot;) ## Parsed with column specification: ## cols( ## .default = col_character(), ## GAME_EVENT_ID = col_double(), ## PLAYER_ID = col_double(), ## TEAM_ID = col_double(), ## PERIOD = col_double(), ## MINUTES_REMAINING = col_double(), ## SECONDS_REMAINING = col_double(), ## SHOT_DISTANCE = col_double(), ## LOC_X = col_double(), ## LOC_Y = col_double(), ## SHOT_ATTEMPTED_FLAG = col_double(), ## SHOT_MADE_FLAG = col_double(), ## GAME_DATE = col_double() ## ) ## See spec(.</description>
+      <description>Introduction Nearly all sports have one thing in common; a final score. It’s the most important number, and some say it’s the only one that matters. In spite of that view, many sports have been flipped on their head by a proper understanding of key numbers. My mind automatically drifts to the story told in Micheal Lewis’ “Moneyball”. In which, the MLB was revolutionized by the analytical ideas of a few baseball black sheep.</description>
     </item>
     
     <item>
@@ -31,7 +31,7 @@
       <pubDate>Tue, 08 Dec 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/12/08/technical-financial-analysis/</guid>
-      <description>This is a placeholder for my finance analysis.</description>
+      <description>Introduction Technical analysis has long been a core component of Finance. However, only recently has this process become automated; and we have Data Science to thank. Machine Learning Algorithms, a type of AI, are now the backbone of our major financial institutions. (story about computing race) Nearly everyone generating high profit in financial markets makes use of this technology. One of my long term goals is to build a live data algorithm that makes intelligent decisions on the fly.</description>
     </item>
     
   </channel>
