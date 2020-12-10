@@ -22,7 +22,6 @@ When you click the **Knit** button a document will be generated that includes bo
 
 ```{r, message=FALSE}
 dat1 <- read_csv("data/blkjckhands.csv")
-dat2 <- read_csv("data/all_stocks_5yr.csv")
 ```
 
 ```{r}
@@ -33,70 +32,136 @@ glimpse(dat1)
 # create new binary winloss variables 
 
 # summary statistics for interesting values ply2cardsum/card1/card2/dealcard1/dealcard2/winloss/blkjack
+summary(dat1$ply2cardsum)
+summary(dat1$card1)
+summary(dat1$card2)
+summary(dat1$dealcard1)
+summary(dat1$dealcard2)
+summary(dat1$plwinamt)
+summary(dat1$dlwinamt)
+```
 
+
+```{r}
+
+# percent chance of win
+windat <- dat1 %>%
+  filter(plwinamt == 20) %>%
+  summarise(win_count = n()) 
+
+totl_dat <- dat1 %>%
+  summarise(totl_count = n())
+
+win_pct <- max(windat$win_count) / max(totl_dat$totl_count)
+win_pct
+
+# percent chance of push
+pushdat <- dat1 %>%
+  filter(plwinamt == 10) %>%
+  summarise(push_count = n()) 
+
+totl_dat <- dat1 %>%
+  summarise(totl_count = n())
+
+push_pct <- max(pushdat$push_count) / max(totl_dat$totl_count)
+push_pct
+
+# percent chance of loss
+lossdat <- dat1 %>%
+  filter(plwinamt == 0) %>%
+  summarise(loss_count = n()) 
+
+totl_dat <- dat1 %>%
+  summarise(totl_count = n())
+
+loss_pct <- max(lossdat$loss_count) / max(totl_dat$totl_count)
+loss_pct
+
+# pct of blackjack chance in win 
+blkjckdat <- dat1 %>%
+  filter(plwinamt == 25) %>%
+  summarise(blkjck_count = n()) 
+
+blkjck_true_pct <- max(blkjckdat$blkjck_count) / max(totl_dat$totl_count)
+blkjck_true_pct
+
+# calculate expected value
+ex1 <- 15 * blkjck_true_pct
+ex2 <- 10 * win_pct
+ex3 <- -10 * loss_pct
+ex4 <- 0 * push_pct
+
+EV <- ex1 + ex2 +ex3 + ex
+EV
+```
+
+```{r}
 # first vis
 # x needs to be play2cardsum/sumofcards and y is percentage of win/loss
+x1 <- c(20, 25)
+plhand_count <- dat1 %>%
+  group_by(ply2cardsum) %>%
+  summarise(count = n(), .groups = "keep")
+glimpse(plhand_count)
+  
+plhand_win <- dat1 %>%
+  group_by(ply2cardsum) %>%
+  filter(plwinamt %in% x1) %>%
+  summarise(win_count = n(), .groups = "keep")
+glimpse(plhand_win)
+
+plwin_pct <- plhand_count %>%
+  left_join(plhand_win) %>%
+  summarise(percent_win = win_count / count)
+
+plot1 <- ggplot(plwin_pct, aes(ply2cardsum, percent_win)) +
+  geom_bar(stat = "identity")
+plot1
+
+# facet by dealer card?
+
+```
+
+
+
+```{r}
+dlhand_count <- dat1 %>%
+  group_by(dealcard2) %>%
+  summarise(count = n(), .groups = "keep")
+glimpse(dlhand_count)
+  
+dlhand_win <- dat1 %>%
+  group_by(dealcard2) %>%
+  filter(dlwinamt %in% x2) %>%
+  summarise(win_count = n(), .groups = "keep")
+glimpse(dlhand_win)
+
+dlwin_pct <- dlhand_count %>%
+  left_join(dlhand_win) %>%
+  summarise(percent_win = win_count / count)
+
+plot2 <- ggplot(dlwin_pct, aes(dealcard2, percent_win)) +
+  geom_bar(stat = "identity")
+plot2
+
 
 # second vis
 # x is dealcard1 and y is winloss/dlbustbeat
 
+ggplot(dat1, aes(dealcard1, ))
+
 # third vis 
 # ply2cardsum y is percent plybustbeat
 
-# plot blackjacks for fun 
-
-```
-
-
-```{r}
-glimpse(dat2)
-```
-## Stock Analysis
-
-```{r}
-# pick stock and find S&P total value
-
-# plot some summary stats for stock/S&P price/volume/TTR
-```
-
-```{r,  echo=TRUE}
-open1 <- na.omit(dat2$open)
-close1 <- na.omit(dat2$close)
-high1 <- na.omit(dat2$high)
-low1 <- na.omit(dat2$low)
-
-# dat3 <- data.frame(high = high1, low = low1, close = close1, check.rows = FALSE)
-# attempt at making a high-low-close df for BBands
-
-rsi_dat <- dat2 %>%
-  summarise(rsi = RSI(open1, n = 14, maType = "SMA"))
-
-volatility_dat <- dat2 %>%
-  summarise(vol = volatility(close1, n = 10, calc = "close", N = 260))
-
-#bbands_dat <- dat2 %>%
-  #select(high, low, close)
-
-bbands <- BBands(close1, n = 20, maType = SMA)
-# try to compute bbands with high-low-close
-
-momentum_dat <- dat2 %>%
-  summarise(momentum(close1, n = 1))
-# perhaps compare long momentum and short momentum in some way?
-
-macd_dat <- dat2 %>%
-  summarise(macd = MACD(open1, nFast=12, nSlow=26, nSig=9, maType= "SMA", percent = FALSE))
+# plot straight win push loss percentages 
 ```
 
 ```{r}
-# identify and explain all indicators 
 
-# q1 part 2 
-# plot all indicators over full time period
+#Determine hit or stand based on ply2cardsum
 
-# describe signals and draw circles/lines on plot to show 
+#determine hit or stand based on dealcard1
 
-# DONT DO Q2 twice double check PROJ PROPOSAL
+# combine the two, show chart of all possibilities 
+# ply2card sum (or possible hands) == rows and dealcard1 == col
 ```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

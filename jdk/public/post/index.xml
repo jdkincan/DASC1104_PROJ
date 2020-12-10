@@ -22,7 +22,7 @@
       <pubDate>Tue, 08 Dec 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/12/08/nba-evolution/</guid>
-      <description>PLaceholder for NBA analysis.</description>
+      <description>Introduction  EDA shots10 &amp;lt;- read_csv(&amp;quot;data/nba_shots_2010.csv&amp;quot;) ## Parsed with column specification: ## cols( ## .default = col_character(), ## GAME_EVENT_ID = col_double(), ## PLAYER_ID = col_double(), ## TEAM_ID = col_double(), ## PERIOD = col_double(), ## MINUTES_REMAINING = col_double(), ## SECONDS_REMAINING = col_double(), ## SHOT_DISTANCE = col_double(), ## LOC_X = col_double(), ## LOC_Y = col_double(), ## SHOT_ATTEMPTED_FLAG = col_double(), ## SHOT_MADE_FLAG = col_double(), ## GAME_DATE = col_double() ## ) ## See spec(.</description>
     </item>
     
     <item>

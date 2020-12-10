@@ -1,0 +1,131 @@
+---
+title: "Stock Analysis"
+author: "Jack Kincannon"
+date: "12/9/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(patchwork)
+library(TTR)
+```
+
+```{r}
+stockdat <- read_csv("data/all_stocks_5yr.csv")
+```
+
+```{r}
+glimpse(stockdat)
+```
+
+## Stock Analysis
+
+```{r}
+length(stockdat$date)
+
+open1 <- na.omit(stockdat$open)
+close1 <- na.omit(stockdat$close)
+high1 <- na.omit(stockdat$high)
+low1 <- na.omit(stockdat$low)
+
+# pick stock and find S&P total value
+sp <- stockdat %>%
+  group_by(date) %>%
+  summarise(avg_close = mean(close, na.rm = TRUE), .groups = "keep")
+glimpse(sp)
+
+ggplot(sp, aes(date, avg_close)) +
+  geom_line()
+
+sp1 <- stockdat %>%
+  filter(Name == "AAPL") %>%
+  group_by(date) %>%
+  summarise(avg_close = mean(close, na.rm = TRUE), .groups = "keep")
+glimpse(sp1)
+
+ggplot(sp1, aes(date, avg_close)) +
+  geom_line()
+
+
+# plot some summary stats for stock/S&P price/volume/TTR
+```
+
+```{r,  echo=TRUE}
+open1 <- na.omit(stockdat$open)
+close1 <- na.omit(stockdat$close)
+high1 <- na.omit(stockdat$high)
+low1 <- na.omit(stockdat$low)
+
+df <- data.frame(open_na = open1,
+           close_na = close1,
+           high_na = high1,
+           low_na = low1, 
+           date1 = stockdat$date,
+           check.rows = FALSE)
+
+# dat3 <- data.frame(high = high1, low = low1, close = close1, check.rows = FALSE)
+# attempt at making a high-low-close df for BBands
+glimpse(stockdat)
+```
+
+```{r}
+
+rsi_dat <- stockdat %>%
+  filter(Name == "AAPL") %>%
+  summarise(rsi = RSI(open1, n = 14, maType = "SMA"), Name) 
+head(rsi_dat)
+N1 <- length(stockdat$date) - length(rsi_dat$rsi)
+
+N <- length(stockdat$date)
+rsi_dat1 <- for (i in 1:N) {
+    replace_na(rsi_dat$rsi[i], 0)
+}
+
+
+
+dat1 <- stockdat %>%
+  left_join(rsi_dat)
+
+
+```
+
+```{r}
+volatility_dat <- dat2 %>%
+  summarise(vol = volatility(close1, n = 10, calc = "close", N = 260))
+
+#bbands_dat <- dat2 %>%
+  #select(high, low, close)
+```
+
+```{r}
+bbands <- BBands(close1, n = 20, maType = SMA)
+# try to compute bbands with high-low-close
+```
+
+```{r}
+momentum_dat <- dat2 %>%
+  summarise(momentum(close1, n = 1))
+# perhaps compare long momentum and short momentum in some way?
+```
+
+```{r}
+macd_dat <- dat2 %>%
+  summarise(macd = MACD(open1, nFast=12, nSlow=26, nSig=9, maType= "SMA", percent = FALSE))
+```
+
+
+```{r}
+# identify and explain all indicators 
+
+# q1 part 2 
+# plot all indicators over full time period
+
+# describe signals and draw circles/lines on plot to show 
+
+# DONT DO Q2 twice double check PROJ PROPOSAL
+```

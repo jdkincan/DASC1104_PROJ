@@ -1,0 +1,503 @@
+---
+title: NBA Evolution
+author: ~
+date: '2020-12-08'
+slug: nba-evolution
+categories: []
+tags: []
+---
+
+<link href="index_files/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="index_files/anchor-sections/anchor-sections.js"></script>
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+</div>
+<div id="eda" class="section level1">
+<h1>EDA</h1>
+<pre class="r"><code>shots10 &lt;- read_csv(&quot;data/nba_shots_2010.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_character(),
+##   GAME_EVENT_ID = col_double(),
+##   PLAYER_ID = col_double(),
+##   TEAM_ID = col_double(),
+##   PERIOD = col_double(),
+##   MINUTES_REMAINING = col_double(),
+##   SECONDS_REMAINING = col_double(),
+##   SHOT_DISTANCE = col_double(),
+##   LOC_X = col_double(),
+##   LOC_Y = col_double(),
+##   SHOT_ATTEMPTED_FLAG = col_double(),
+##   SHOT_MADE_FLAG = col_double(),
+##   GAME_DATE = col_double()
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
+<pre class="r"><code>shots19 &lt;- read_csv(&quot;data/nba_shots_2019.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_character(),
+##   GAME_EVENT_ID = col_double(),
+##   PLAYER_ID = col_double(),
+##   TEAM_ID = col_double(),
+##   PERIOD = col_double(),
+##   MINUTES_REMAINING = col_double(),
+##   SECONDS_REMAINING = col_double(),
+##   SHOT_DISTANCE = col_double(),
+##   LOC_X = col_double(),
+##   LOC_Y = col_double(),
+##   SHOT_ATTEMPTED_FLAG = col_double(),
+##   SHOT_MADE_FLAG = col_double(),
+##   GAME_DATE = col_double()
+## )
+## See spec(...) for full column specifications.</code></pre>
+<pre class="r"><code>glimpse(shots10)</code></pre>
+<pre><code>## Observations: 200,966
+## Variables: 24
+## $ GRID_TYPE           &lt;chr&gt; &quot;Shot Chart Detail&quot;, &quot;Shot Chart Detail&quot;, &quot;Shot C…
+## $ GAME_ID             &lt;chr&gt; &quot;0020900001&quot;, &quot;0020900001&quot;, &quot;0020900001&quot;, &quot;002090…
+## $ GAME_EVENT_ID       &lt;dbl&gt; 2, 3, 5, 6, 7, 9, 10, 12, 14, 16, 18, 23, 25, 27,…
+## $ PLAYER_ID           &lt;dbl&gt; 2760, 951, 2544, 708, 2760, 2544, 951, 2760, 2590…
+## $ PLAYER_NAME         &lt;chr&gt; &quot;Anderson Varejao&quot;, &quot;Ray Allen&quot;, &quot;LeBron James&quot;, …
+## $ TEAM_ID             &lt;dbl&gt; 1610612739, 1610612738, 1610612739, 1610612738, 1…
+## $ TEAM_NAME           &lt;chr&gt; &quot;Cleveland Cavaliers&quot;, &quot;Boston Celtics&quot;, &quot;Clevela…
+## $ PERIOD              &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+## $ MINUTES_REMAINING   &lt;dbl&gt; 11, 11, 11, 10, 10, 10, 9, 9, 9, 9, 8, 8, 8, 8, 8…
+## $ SECONDS_REMAINING   &lt;dbl&gt; 31, 12, 3, 46, 26, 6, 45, 36, 27, 6, 54, 35, 15, …
+## $ EVENT_TYPE          &lt;chr&gt; &quot;Made Shot&quot;, &quot;Missed Shot&quot;, &quot;Made Shot&quot;, &quot;Made Sh…
+## $ ACTION_TYPE         &lt;chr&gt; &quot;Step Back Jump shot&quot;, &quot;Jump Shot&quot;, &quot;Jump Shot&quot;, …
+## $ SHOT_TYPE           &lt;chr&gt; &quot;2PT Field Goal&quot;, &quot;2PT Field Goal&quot;, &quot;2PT Field Go…
+## $ SHOT_ZONE_BASIC     &lt;chr&gt; &quot;In The Paint (Non-RA)&quot;, &quot;Mid-Range&quot;, &quot;Mid-Range&quot;…
+## $ SHOT_ZONE_AREA      &lt;chr&gt; &quot;Center(C)&quot;, &quot;Right Side(R)&quot;, &quot;Right Side Center(…
+## $ SHOT_ZONE_RANGE     &lt;chr&gt; &quot;8-16 ft.&quot;, &quot;16-24 ft.&quot;, &quot;16-24 ft.&quot;, &quot;8-16 ft.&quot;,…
+## $ SHOT_DISTANCE       &lt;dbl&gt; 9, 22, 23, 8, 7, 1, 7, 3, 15, 8, 23, 16, 1, 0, 0,…
+## $ LOC_X               &lt;dbl&gt; 36, 214, 129, 36, 26, -2, 69, 1, -11, 70, -229, 1…
+## $ LOC_Y               &lt;dbl&gt; 93, 83, 194, 75, 75, 12, 28, 34, 156, 50, 37, 39,…
+## $ SHOT_ATTEMPTED_FLAG &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+## $ SHOT_MADE_FLAG      &lt;dbl&gt; 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1…
+## $ GAME_DATE           &lt;dbl&gt; 20091027, 20091027, 20091027, 20091027, 20091027,…
+## $ HTM                 &lt;chr&gt; &quot;CLE&quot;, &quot;CLE&quot;, &quot;CLE&quot;, &quot;CLE&quot;, &quot;CLE&quot;, &quot;CLE&quot;, &quot;CLE&quot;, …
+## $ VTM                 &lt;chr&gt; &quot;BOS&quot;, &quot;BOS&quot;, &quot;BOS&quot;, &quot;BOS&quot;, &quot;BOS&quot;, &quot;BOS&quot;, &quot;BOS&quot;, …</code></pre>
+<ul>
+<li>create shot pct vs dist table</li>
+<li>compare percentage of shots taken by area</li>
+</ul>
+<pre class="r"><code>shots10_2pt &lt;- shots10 %&gt;%
+  select(SHOT_DISTANCE, SHOT_TYPE, SHOT_MADE_FLAG, SHOT_ATTEMPTED_FLAG) %&gt;%
+  filter(SHOT_TYPE == &quot;2PT Field Goal&quot;) %&gt;%
+  group_by(SHOT_DISTANCE) %&gt;%
+  summarise(shot_percentage_by_distance =
+              sum(SHOT_MADE_FLAG) / sum(SHOT_ATTEMPTED_FLAG),
+            points_per_shot =
+              2 * shot_percentage_by_distance,
+            .groups = &quot;keep&quot;) 
+
+shots10_3pt &lt;- shots10 %&gt;%
+  select(SHOT_DISTANCE, SHOT_TYPE, SHOT_MADE_FLAG, SHOT_ATTEMPTED_FLAG) %&gt;%
+  filter(SHOT_TYPE == &quot;3PT Field Goal&quot;) %&gt;%
+  group_by(SHOT_DISTANCE) %&gt;%
+  summarise(shot_percentage_by_distance =
+              sum(SHOT_MADE_FLAG) / sum(SHOT_ATTEMPTED_FLAG),
+            points_per_shot =
+              3 * shot_percentage_by_distance,
+            .groups = &quot;keep&quot;) 
+
+shots19_2pt &lt;- shots19 %&gt;%
+  select(SHOT_DISTANCE, SHOT_TYPE, SHOT_MADE_FLAG, SHOT_ATTEMPTED_FLAG) %&gt;%
+  filter(SHOT_TYPE == &quot;2PT Field Goal&quot;) %&gt;%
+  group_by(SHOT_DISTANCE) %&gt;%
+  summarise(shot_percentage_by_distance =
+              sum(SHOT_MADE_FLAG) / sum(SHOT_ATTEMPTED_FLAG),
+            points_per_shot =
+              2 * shot_percentage_by_distance,
+            .groups = &quot;keep&quot;) 
+
+shots19_3pt &lt;- shots19 %&gt;%
+  select(SHOT_DISTANCE, SHOT_TYPE, SHOT_MADE_FLAG, SHOT_ATTEMPTED_FLAG) %&gt;%
+  filter(SHOT_TYPE == &quot;3PT Field Goal&quot;) %&gt;%
+  group_by(SHOT_DISTANCE) %&gt;%
+  summarise(shot_percentage_by_distance =
+              sum(SHOT_MADE_FLAG) / sum(SHOT_ATTEMPTED_FLAG),
+            points_per_shot =
+              3 * shot_percentage_by_distance,
+            .groups = &quot;keep&quot;) 
+
+# 2010 shots
+shots10_pct &lt;- shots10_2pt %&gt;%
+  full_join(shots10_3pt, by = &quot;SHOT_DISTANCE&quot;)
+
+# 2019 shots
+shots19_pct &lt;- shots19_2pt %&gt;%
+  full_join(shots19_3pt, by = &quot;SHOT_DISTANCE&quot;)</code></pre>
+<pre class="r"><code># 2010 EDA1
+#NOTES 
+ #invvestigate labels
+ #combine charts?
+N1 &lt;- (0:23)
+N2 &lt;- c(30, 50, 70)
+
+plot1 &lt;- ggplot(shots10_pct,
+                aes(x = SHOT_DISTANCE,
+                    y = shot_percentage_by_distance.x * 100,
+                    fill = shot_percentage_by_distance.x)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  labs(title = &quot;2PT Field Goals&quot;,
+       subtitle = &quot;2009-10 Regular Season&quot;) +
+  scale_x_continuous(name = &quot;Shot Distance (ft)&quot;,
+                     breaks = N1,
+                     limits = c(0, 22)) +
+  scale_y_continuous(name = &quot;Shooting Percentage&quot;,
+                     breaks = N2,
+                     limits = c(0, 80)) +
+  scale_fill_binned(low=&quot;skyblue1&quot;, high=&quot;firebrick&quot;) +
+  theme(legend.title = element_blank())
+
+N3 &lt;- (21:35)
+N4 &lt;- c(10, 20, 30, 40, 50)
+
+plot2 &lt;- ggplot(shots10_pct,
+                aes(x = SHOT_DISTANCE,
+                y = shot_percentage_by_distance.y * 100,
+                fill = shot_percentage_by_distance.y)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  labs(title = &quot;3PT Field Goals&quot;,
+       subtitle = &quot;2009-10 Regular Season&quot;) +
+  scale_x_continuous(name = &quot;Shot Distance (ft)&quot;,
+                     breaks = N3,
+                     limits = c(21, 36)) +
+  scale_y_continuous(name = &quot;Shooting Percentage&quot;,
+                     breaks = N4,
+                     limits = c(0, 50)) +
+  scale_fill_binned(low = &quot;skyblue1&quot;, high = &quot;firebrick&quot;) +
+  theme(legend.title = element_blank())
+
+plot1 / plot2</code></pre>
+<pre><code>## Warning: Removed 62 rows containing missing values (position_stack).</code></pre>
+<pre><code>## Warning: Removed 2 rows containing missing values (geom_bar).</code></pre>
+<pre><code>## Warning: Removed 70 rows containing missing values (position_stack).</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_bar).</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>#2019 EDA1
+#NOTES 
+  #possibly combine charts 
+  #investigate labels
+ 
+N1 &lt;- (0:22)
+N2 &lt;- c(30, 50, 70)
+
+plot1 &lt;- ggplot(shots19_pct,
+                aes(x = SHOT_DISTANCE,
+                    y = shot_percentage_by_distance.x * 100,
+                    fill = shot_percentage_by_distance.x)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  labs(title = &quot;2PT Field Goals&quot;,
+       subtitle = &quot;2018-19 Regular Season&quot;) +
+  scale_x_continuous(name = &quot;Shot Distance (ft)&quot;,
+                     breaks = N1,
+                     limits = c(0, 22)) +
+  scale_y_continuous(name = &quot;Shooting Percentage&quot;,
+                     breaks = N2,
+                     limits = c(0, 80)) +
+  scale_fill_binned(low=&quot;skyblue1&quot;, high=&quot;firebrick&quot;) +
+  theme(legend.title = element_blank())
+
+N3 &lt;- (21:35)
+N4 &lt;- c(10, 20, 30, 40, 50)
+
+plot2 &lt;- ggplot(shots19_pct,
+                aes(x = SHOT_DISTANCE,
+                y = shot_percentage_by_distance.y * 100,
+                fill = shot_percentage_by_distance.y)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  labs(title = &quot;3PT Field Goals&quot;,
+       subtitle = &quot;2018-19 Regular Season&quot;) +
+  scale_x_continuous(name = &quot;Shot Distance (ft)&quot;,
+                     breaks = N3,
+                     limits = c(21, 36)) +
+  scale_y_continuous(name = &quot;Shooting Percentage&quot;,
+                     breaks = N4,
+                     limits = c(0, 50)) +
+  scale_fill_binned(low = &quot;skyblue1&quot;, high = &quot;firebrick&quot;) +
+  theme(legend.title = element_blank())
+
+plot1 / plot2</code></pre>
+<pre><code>## Warning: Removed 61 rows containing missing values (position_stack).</code></pre>
+<pre><code>## Warning: Removed 2 rows containing missing values (geom_bar).</code></pre>
+<pre><code>## Warning: Removed 68 rows containing missing values (position_stack).</code></pre>
+<pre><code>## Warning: Removed 2 rows containing missing values (geom_bar).</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+### Possible New Chart Configuration</p>
+<pre class="r"><code>plot26 &lt;- ggplot(shots19_pct,
+                aes(x = SHOT_DISTANCE,
+                fill = shot_percentage_by_distance.y)) +
+  geom_bar(aes(y = shot_percentage_by_distance.y * 100), stat = &quot;identity&quot;) +
+  geom_bar(aes(y = shot_percentage_by_distance.x * 100), stat = &quot;identity&quot;)
+  labs(title = &quot;3PT Field Goals&quot;,
+       subtitle = &quot;2018-19 Regular Season&quot;) +
+  scale_x_continuous(name = &quot;Shot Distance (ft)&quot;,
+                     breaks = N3,
+                     limits = c(0, 36)) +
+  scale_y_continuous(name = &quot;Shooting Percentage&quot;,
+                     breaks = N4,
+                     limits = c(0, 80)) +
+  scale_fill_binned(low = &quot;skyblue1&quot;, high = &quot;firebrick&quot;) +
+  theme(legend.title = element_blank())</code></pre>
+<pre><code>## NULL</code></pre>
+<pre class="r"><code># percentage of shots by area 
+N5 &lt;- length(shots10$SHOT_ATTEMPTED_FLAG)
+N6 &lt;- length(shots19$SHOT_ATTEMPTED_FLAG)
+
+# function to count shots by zone
+shot_counter &lt;- function(x, y, z) {
+  a &lt;- x %&gt;%
+    select(SHOT_ZONE_BASIC) %&gt;%
+    filter(SHOT_ZONE_BASIC == y)
+  b &lt;- length(a$SHOT_ZONE_BASIC)
+  c &lt;- b / z
+  print(c)
+}
+
+# percent of shots by area 2010
+pt10 &lt;- shot_counter(shots10, &quot;In The Paint (Non-RA)&quot;, N5)</code></pre>
+<pre><code>## [1] 0.1314949</code></pre>
+<pre class="r"><code>ra10 &lt;- shot_counter(shots10, &quot;Restricted Area&quot;, N5)</code></pre>
+<pre><code>## [1] 0.3322054</code></pre>
+<pre class="r"><code>mr10 &lt;- shot_counter(shots10, &quot;Mid-Range&quot;, N5)</code></pre>
+<pre><code>## [1] 0.3143268</code></pre>
+<pre class="r"><code>lc10 &lt;- shot_counter(shots10, &quot;Left Corner 3&quot;, N5)</code></pre>
+<pre><code>## [1] 0.03116448</code></pre>
+<pre class="r"><code>ab10 &lt;- shot_counter(shots10, &quot;Above the Break 3&quot;, N5)</code></pre>
+<pre><code>## [1] 0.1604152</code></pre>
+<pre class="r"><code>rc10 &lt;- shot_counter(shots10, &quot;Right Corner 3&quot;, N5)</code></pre>
+<pre><code>## [1] 0.02802962</code></pre>
+<pre class="r"><code>bc10 &lt;- shot_counter(shots10, &quot;Backcourt&quot;, N5)</code></pre>
+<pre><code>## [1] 0.002363584</code></pre>
+<pre class="r"><code># percent of shots by area 2019
+pt19 &lt;- shot_counter(shots19, &quot;In The Paint (Non-RA)&quot;, N6)</code></pre>
+<pre><code>## [1] 0.1600397</code></pre>
+<pre class="r"><code>ra19 &lt;- shot_counter(shots19, &quot;Restricted Area&quot;, N6)</code></pre>
+<pre><code>## [1] 0.3300267</code></pre>
+<pre class="r"><code>mr19 &lt;- shot_counter(shots19, &quot;Mid-Range&quot;, N6)</code></pre>
+<pre><code>## [1] 0.1516235</code></pre>
+<pre class="r"><code>lc19 &lt;- shot_counter(shots19, &quot;Left Corner 3&quot;, N6)</code></pre>
+<pre><code>## [1] 0.04152047</code></pre>
+<pre class="r"><code>ab19 &lt;- shot_counter(shots19, &quot;Above the Break 3&quot;, N6)</code></pre>
+<pre><code>## [1] 0.2746995</code></pre>
+<pre class="r"><code>rc19 &lt;- shot_counter(shots19, &quot;Right Corner 3&quot;, N6)</code></pre>
+<pre><code>## [1] 0.03996665</code></pre>
+<pre class="r"><code>bc19 &lt;- shot_counter(shots19, &quot;Backcourt&quot;, N6)</code></pre>
+<pre><code>## [1] 0.002123413</code></pre>
+<pre class="r"><code># df for 2010 plot
+pie_dat10 &lt;- data.frame(
+  shot_zone = c(&quot;In The Paint (Non-RA)&quot;, &quot;Restricted Area&quot;, &quot;Mid-Range&quot;, &quot;Left Corner 3&quot;, &quot;Above the Break 3&quot;, &quot;Right Corner 3&quot;, &quot;Backcourt&quot;),
+  percent = c(pt10, ra10, mr10, lc10, ab10, rc10, bc10)
+)
+
+# df for 2019 plot
+pie_dat19 &lt;- data.frame(
+  shot_zone = c(&quot;In The Paint (Non-RA)&quot;, &quot;Restricted Area&quot;, &quot;Mid-Range&quot;, &quot;Left Corner 3&quot;, &quot;Above the Break 3&quot;, &quot;Right Corner 3&quot;, &quot;Backcourt&quot;),
+  percent = c(pt19, ra19, mr19, lc19, ab19, rc19, bc19)
+)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+</div>
+<div id="data-analysis" class="section level1">
+<h1>Data Analysis</h1>
+<pre class="r"><code># 2010 Shot Dist
+#NOTES 
+  # Add photo?
+
+zones &lt;- c(&quot;Mid-Range&quot;, &quot;Right Corner 3&quot;, &quot;Left Corner 3&quot;, &quot;Above the Break 3&quot;, &quot;Backcourt&quot;)
+mypng &lt;- readPNG(&quot;/home/jdkincan/1001-proj-final/nba_court_1.png&quot;)
+
+shots10_zone &lt;- shots10 %&gt;%
+  filter(SHOT_ZONE_BASIC %in% zones) 
+
+plot5 &lt;- ggplot(shots10_zone, aes(LOC_X, LOC_Y)) + 
+  geom_hex(binwidth = 20, na.rm = FALSE) +
+  scale_fill_gradient(low=&quot;skyblue1&quot;, high=&quot;firebrick&quot;) +
+  labs(title = &quot;All Shots Taken Outside of the Paint&quot;, subtitle = &quot;2009-2010 NBA Season&quot;, x = &quot;&quot;, y = &quot;&quot;, legend = &quot;Frequency&quot;) 
+plot5</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<pre class="r"><code>#theme_void()
+#ggdraw() +
+  #draw_image(mypng) +
+  #draw_plot(plot5/6)</code></pre>
+<pre class="r"><code>shots19_zone &lt;- shots19 %&gt;%
+  filter(SHOT_ZONE_BASIC %in% zones)
+
+plot6 &lt;- ggplot(shots19_zone, aes(LOC_X, LOC_Y)) + 
+  geom_hex(binwidth = 20, na.rm = FALSE) +
+  scale_fill_gradient(low=&quot;skyblue1&quot;, high=&quot;firebrick&quot;) +
+  labs(title = &quot;All Shots Taken Outside of the Paint&quot;, subtitle = &quot;2018-2019 NBA Season&quot;, x = &quot;&quot;, y = &quot;&quot;)
+plot6 </code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<pre class="r"><code># shots10_pct 
+#NOTES
+  #Add Legend 
+  #label hlines
+  # text layer?
+# Data ISSUE
+ # inconsistent 3 collection
+
+plot7 &lt;- ggplot(shots10_pct, aes(x = SHOT_DISTANCE)) +
+  geom_line(aes(y = points_per_shot.x), color = &quot;skyblue1&quot;) +
+  geom_line(aes(y = points_per_shot.y), color = &quot;deepskyblue1&quot;) +
+  labs(title = &quot;Relative Value of Field Goals&quot;,
+       subtitle = &quot;2009-10 Regular Season&quot;,
+       x = &quot;Shot Distance (ft)&quot;,
+       y = &quot;Points Per Shot&quot;) +
+  theme(legend.position = &quot;right&quot;) +
+  geom_vline(xintercept = 22, color = &quot;firebrick&quot;) +
+  geom_vline(xintercept = 23, color = &quot;firebrick&quot;) +
+  xlim(1, 34) +
+  ylim(0.0, 1.5)
+
+plot8 &lt;- ggplot(shots19_pct, aes(x = SHOT_DISTANCE)) +
+  geom_line(aes(y = points_per_shot.x), color = &quot;skyblue1&quot;) +
+  geom_line(aes(y = points_per_shot.y), color = &quot;deepskyblue1&quot;) +
+  labs(title = &quot;Relative Value of Field Goals&quot;,
+       subtitle = &quot;2018-19 Regular Season&quot;,
+       x = &quot;Shot Distance (ft)&quot;,
+       y = &quot;Points Per Shot&quot;) +
+  theme(legend.position = &quot;right&quot;) +
+  geom_vline(xintercept = 21, color = &quot;firebrick&quot;) +
+  geom_vline(xintercept = 23, color = &quot;firebrick&quot;) +
+  xlim(1, 34) +
+  ylim(0.0, 1.5)
+
+plot7 + plot8</code></pre>
+<pre><code>## Warning: Removed 62 row(s) containing missing values (geom_path).</code></pre>
+<pre><code>## Warning: Removed 72 row(s) containing missing values (geom_path).</code></pre>
+<pre><code>## Warning: Removed 61 row(s) containing missing values (geom_path).</code></pre>
+<pre><code>## Warning: Removed 70 row(s) containing missing values (geom_path).</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<pre class="r"><code># percentage of shots by area 
+
+# counts total shots in each zone by year
+shot_counter1 &lt;- function(x, y) {
+  a &lt;- x %&gt;%
+    select(SHOT_ZONE_BASIC) %&gt;%
+    filter(SHOT_ZONE_BASIC == y)
+  b &lt;- length(a$SHOT_ZONE_BASIC)
+  print(b)
+}
+
+# total number of shots by area 2010
+pt10_ct &lt;- shot_counter1(shots10, &quot;In The Paint (Non-RA)&quot;)</code></pre>
+<pre><code>## [1] 26426</code></pre>
+<pre class="r"><code>ra10_ct &lt;- shot_counter1(shots10, &quot;Restricted Area&quot;)</code></pre>
+<pre><code>## [1] 66762</code></pre>
+<pre class="r"><code>mr10_ct &lt;- shot_counter1(shots10, &quot;Mid-Range&quot;)</code></pre>
+<pre><code>## [1] 63169</code></pre>
+<pre class="r"><code>lc10_ct &lt;- shot_counter1(shots10, &quot;Left Corner 3&quot;)</code></pre>
+<pre><code>## [1] 6263</code></pre>
+<pre class="r"><code>ab10_ct &lt;- shot_counter1(shots10, &quot;Above the Break 3&quot;)</code></pre>
+<pre><code>## [1] 32238</code></pre>
+<pre class="r"><code>rc10_ct &lt;- shot_counter1(shots10, &quot;Right Corner 3&quot;)</code></pre>
+<pre><code>## [1] 5633</code></pre>
+<pre class="r"><code>bc10_ct &lt;- shot_counter1(shots10, &quot;Backcourt&quot;)</code></pre>
+<pre><code>## [1] 475</code></pre>
+<pre class="r"><code># total number of shots by area 2019
+pt19_ct &lt;- shot_counter1(shots19, &quot;In The Paint (Non-RA)&quot;)</code></pre>
+<pre><code>## [1] 35122</code></pre>
+<pre class="r"><code>ra19_ct &lt;- shot_counter1(shots19, &quot;Restricted Area&quot;)</code></pre>
+<pre><code>## [1] 72427</code></pre>
+<pre class="r"><code>mr19_ct &lt;- shot_counter1(shots19, &quot;Mid-Range&quot;)</code></pre>
+<pre><code>## [1] 33275</code></pre>
+<pre class="r"><code>lc19_ct &lt;- shot_counter1(shots19, &quot;Left Corner 3&quot;)</code></pre>
+<pre><code>## [1] 9112</code></pre>
+<pre class="r"><code>ab19_ct &lt;- shot_counter1(shots19, &quot;Above the Break 3&quot;)</code></pre>
+<pre><code>## [1] 60285</code></pre>
+<pre class="r"><code>rc19_ct &lt;- shot_counter1(shots19, &quot;Right Corner 3&quot;)</code></pre>
+<pre><code>## [1] 8771</code></pre>
+<pre class="r"><code>bc19_ct &lt;- shot_counter1(shots19, &quot;Backcourt&quot;)</code></pre>
+<pre><code>## [1] 466</code></pre>
+<pre class="r"><code># function to calculate points per shot by zone by year
+made_shot_counter &lt;- function(x, y, z, w) {
+  a &lt;- x %&gt;%
+    select(SHOT_ZONE_BASIC, SHOT_MADE_FLAG) %&gt;%
+    filter(SHOT_MADE_FLAG == 1, SHOT_ZONE_BASIC == y)
+  b &lt;- length(a$SHOT_ZONE_BASIC)
+  c &lt;- b / z
+  d &lt;- c * w
+  print(d)
+}
+
+# total number of shots by area 2010
+pt10_pct &lt;- made_shot_counter(shots10, &quot;In The Paint (Non-RA)&quot;, pt10_ct, 2)</code></pre>
+<pre><code>## [1] 0.8461364</code></pre>
+<pre class="r"><code>ra10_pct &lt;- made_shot_counter(shots10, &quot;Restricted Area&quot;, ra10_ct, 2)</code></pre>
+<pre><code>## [1] 1.211767</code></pre>
+<pre class="r"><code>mr10_pct &lt;- made_shot_counter(shots10, &quot;Mid-Range&quot;, mr10_ct, 2)</code></pre>
+<pre><code>## [1] 0.8002976</code></pre>
+<pre class="r"><code>lc10_pct &lt;- made_shot_counter(shots10, &quot;Left Corner 3&quot;, lc10_ct, 3)</code></pre>
+<pre><code>## [1] 1.174517</code></pre>
+<pre class="r"><code>ab10_pct &lt;- made_shot_counter(shots10, &quot;Above the Break 3&quot;, ab10_ct, 3)</code></pre>
+<pre><code>## [1] 1.03713</code></pre>
+<pre class="r"><code>rc10_pct &lt;- made_shot_counter(shots10, &quot;Right Corner 3&quot;, rc10_ct, 3)</code></pre>
+<pre><code>## [1] 1.171134</code></pre>
+<pre class="r"><code>bc10_pct &lt;- made_shot_counter(shots10, &quot;Backcourt&quot;, bc10_ct, 3)</code></pre>
+<pre><code>## [1] 0.1073684</code></pre>
+<pre class="r"><code># total number of shots by area 2019
+pt19_pct &lt;- made_shot_counter(shots19, &quot;In The Paint (Non-RA)&quot;, pt19_ct, 2)</code></pre>
+<pre><code>## [1] 0.8073003</code></pre>
+<pre class="r"><code>ra19_pct &lt;- made_shot_counter(shots19, &quot;Restricted Area&quot;, ra19_ct, 2)</code></pre>
+<pre><code>## [1] 1.258481</code></pre>
+<pre class="r"><code>mr19_pct &lt;- made_shot_counter(shots19, &quot;Mid-Range&quot;, mr19_ct, 2)</code></pre>
+<pre><code>## [1] 0.8056499</code></pre>
+<pre class="r"><code>lc19_pct &lt;- made_shot_counter(shots19, &quot;Left Corner 3&quot;, lc19_ct, 3)</code></pre>
+<pre><code>## [1] 1.158582</code></pre>
+<pre class="r"><code>ab19_pct &lt;- made_shot_counter(shots19, &quot;Above the Break 3&quot;, ab19_ct, 3)</code></pre>
+<pre><code>## [1] 1.048072</code></pre>
+<pre class="r"><code>rc19_pct &lt;- made_shot_counter(shots19, &quot;Right Corner 3&quot;, rc19_ct, 3)</code></pre>
+<pre><code>## [1] 1.133166</code></pre>
+<pre class="r"><code>bc19_pct &lt;- made_shot_counter(shots19, &quot;Backcourt&quot;, bc19, 3)</code></pre>
+<pre><code>## [1] 19779.48</code></pre>
+<pre class="r"><code># df for 2010 plot
+bar_dat10 &lt;- data.frame(
+  shot_zone = c(&quot;In The Paint (Non-RA)&quot;, &quot;Restricted Area&quot;, &quot;Mid-Range&quot;, &quot;Left Corner 3&quot;, &quot;Above the Break 3&quot;, &quot;Right Corner 3&quot;),
+  ptspershot = c(pt10_pct, ra10_pct, mr10_pct, lc10_pct, ab10_pct, rc10_pct)
+)
+
+# df for 2019 plot
+bar_dat19 &lt;- data.frame(
+  shot_zone = c(&quot;In The Paint (Non-RA)&quot;, &quot;Restricted Area&quot;, &quot;Mid-Range&quot;, &quot;Left Corner 3&quot;, &quot;Above the Break 3&quot;, &quot;Right Corner 3&quot;),
+  ptspershot = c(pt19_pct, ra19_pct, mr19_pct, lc19_pct, ab19_pct, rc19_pct)
+)
+
+# combined df
+ptsperdat &lt;- bar_dat10 %&gt;%
+  left_join(bar_dat19, by = &quot;shot_zone&quot;)</code></pre>
+<pre class="r"><code># create another plot with zone percentage by year
+
+plot9 &lt;- ggplot(ptsperdat, aes(x = shot_zone, y = ptspershot.x, fill = ptspershot.x)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  labs(title = &quot;Points Per Shot By Zone&quot;,
+       subtitle = &quot;2009-10 Regular Season&quot;) 
+  #scale_x_discrete(name = &quot;Shot Distance (ft)&quot;,
+                   ## limits = c(0, 22)) +
+  #scale_y_discrete(name = &quot;Shooting Percentage&quot;,
+                    # breaks = N2,
+                    # limits = c(0, 80)) +
+  #scale_fill_binned(low=&quot;skyblue1&quot;, high=&quot;firebrick&quot;) +
+  #theme(legend.title = element_blank())
+plot9</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<pre class="r"><code>plot27 &lt;- ggplot(ptsperdat,
+                aes(x = shot_zone)) +
+  geom_bar(aes(y = ptspershot.y), stat = &quot;identity&quot;) +
+  geom_bar(aes(y = ptspershot.x), stat = &quot;identity&quot;)
+plot27</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-13-2.png" width="672" /></p>
+<pre class="r"><code>  #labs(title = &quot;Points Per Shot By Zone&quot;,
+     #  subtitle = &quot;2018-19 Regular Season&quot;) +
+  #scale_x_continuous(name = &quot;Shot Distance (ft)&quot;,
+                    # breaks = N3,
+                    # limits = c(0, 36)) +
+  #scale_y_continuous(name = &quot;Shooting Percentage&quot;,
+               #      breaks = N4,
+                 #    limits = c(0, 80)) +
+  #scale_fill_binned(low = &quot;skyblue1&quot;, high = &quot;firebrick&quot;) +
+  #theme(legend.title = element_blank())</code></pre>
+</div>

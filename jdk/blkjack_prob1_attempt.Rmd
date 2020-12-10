@@ -1,0 +1,68 @@
+---
+title: "blkjck binary indicators"
+author: "Jack Kincannon"
+date: "12/9/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(patchwork)
+library(TTR)
+```
+
+```{r}
+blkjckdat <- read_csv("data/blkjckhands.csv")
+
+glimpse(blkjckdat)
+```
+
+```{r}
+#N <- length(blkjckdat$winloss)
+
+#winlossdat <- blkjckdat %>%
+  #select(winloss)
+
+#N <- length(winlossdat$winloss)
+unique(blkjckdat$winloss)
+winlossclean <- na.omit(blkjckdat$winloss)
+
+blkjckdat$winindicator <- 0
+blkjckdat$lossindicator <- 0
+blkjckdat$pushindicator <- 0
+
+for (i in 1:length(winlossclean)) {
+  if (winlossclean[i] == "Win") {
+    blkjckdat$winindicator[i] <- 1
+  }
+}
+  if (winlossclean[i] == "Loss") {
+    blkjckdat$lossindicator[i] <- 1
+  }
+  if (winlossclean[i] == "Push") {
+    blkjckdat$pushindicator[i] <- 1
+  }
+}
+
+glimpse(blkjckdat)
+```
+
+
+
+```{r}
+blkjckdat$winindicator <- 0
+
+for (i in 1:length(blkjckdat$winloss)) {
+  if (blkjckdat$winloss[i] == "Win") {
+    blkjckdat$winindicator[i] <- 1
+  }
+}
+glimpse(blkjckdat)
+
+
+```
+

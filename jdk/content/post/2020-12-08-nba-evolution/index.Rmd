@@ -1,0 +1,465 @@
+---
+title: NBA Evolution
+author: ~
+date: '2020-12-08'
+slug: nba-evolution
+categories: []
+tags: []
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(dplyr)
+library(here)
+library(patchwork)
+library(ggplot2)
+library(RColorBrewer)
+library(cowplot)
+library(magick)
+library(png)
+theme_set(theme_cowplot())
+```
+
+# Introduction 
+# EDA
+```{r}
+shots10 <- read_csv("data/nba_shots_2010.csv")
+shots19 <- read_csv("data/nba_shots_2019.csv")
+```
+
+```{r}
+glimpse(shots10)
+```
+
+- create shot pct vs dist table
+- compare percentage of shots taken by area
+```{r}
+shots10_2pt <- shots10 %>%
+  select(SHOT_DISTANCE, SHOT_TYPE, SHOT_MADE_FLAG, SHOT_ATTEMPTED_FLAG) %>%
+  filter(SHOT_TYPE == "2PT Field Goal") %>%
+  group_by(SHOT_DISTANCE) %>%
+  summarise(shot_percentage_by_distance =
+              sum(SHOT_MADE_FLAG) / sum(SHOT_ATTEMPTED_FLAG),
+            points_per_shot =
+              2 * shot_percentage_by_distance,
+            .groups = "keep") 
+
+shots10_3pt <- shots10 %>%
+  select(SHOT_DISTANCE, SHOT_TYPE, SHOT_MADE_FLAG, SHOT_ATTEMPTED_FLAG) %>%
+  filter(SHOT_TYPE == "3PT Field Goal") %>%
+  group_by(SHOT_DISTANCE) %>%
+  summarise(shot_percentage_by_distance =
+              sum(SHOT_MADE_FLAG) / sum(SHOT_ATTEMPTED_FLAG),
+            points_per_shot =
+              3 * shot_percentage_by_distance,
+            .groups = "keep") 
+
+shots19_2pt <- shots19 %>%
+  select(SHOT_DISTANCE, SHOT_TYPE, SHOT_MADE_FLAG, SHOT_ATTEMPTED_FLAG) %>%
+  filter(SHOT_TYPE == "2PT Field Goal") %>%
+  group_by(SHOT_DISTANCE) %>%
+  summarise(shot_percentage_by_distance =
+              sum(SHOT_MADE_FLAG) / sum(SHOT_ATTEMPTED_FLAG),
+            points_per_shot =
+              2 * shot_percentage_by_distance,
+            .groups = "keep") 
+
+shots19_3pt <- shots19 %>%
+  select(SHOT_DISTANCE, SHOT_TYPE, SHOT_MADE_FLAG, SHOT_ATTEMPTED_FLAG) %>%
+  filter(SHOT_TYPE == "3PT Field Goal") %>%
+  group_by(SHOT_DISTANCE) %>%
+  summarise(shot_percentage_by_distance =
+              sum(SHOT_MADE_FLAG) / sum(SHOT_ATTEMPTED_FLAG),
+            points_per_shot =
+              3 * shot_percentage_by_distance,
+            .groups = "keep") 
+
+# 2010 shots
+shots10_pct <- shots10_2pt %>%
+  full_join(shots10_3pt, by = "SHOT_DISTANCE")
+
+# 2019 shots
+shots19_pct <- shots19_2pt %>%
+  full_join(shots19_3pt, by = "SHOT_DISTANCE")
+```
+
+```{r}
+# 2010 EDA1
+#NOTES 
+ #invvestigate labels
+ #combine charts?
+N1 <- (0:23)
+N2 <- c(30, 50, 70)
+
+plot1 <- ggplot(shots10_pct,
+                aes(x = SHOT_DISTANCE,
+                    y = shot_percentage_by_distance.x * 100,
+                    fill = shot_percentage_by_distance.x)) +
+  geom_bar(stat = "identity") +
+  labs(title = "2PT Field Goals",
+       subtitle = "2009-10 Regular Season") +
+  scale_x_continuous(name = "Shot Distance (ft)",
+                     breaks = N1,
+                     limits = c(0, 22)) +
+  scale_y_continuous(name = "Shooting Percentage",
+                     breaks = N2,
+                     limits = c(0, 80)) +
+  scale_fill_binned(low="skyblue1", high="firebrick") +
+  theme(legend.title = element_blank())
+
+N3 <- (21:35)
+N4 <- c(10, 20, 30, 40, 50)
+
+plot2 <- ggplot(shots10_pct,
+                aes(x = SHOT_DISTANCE,
+                y = shot_percentage_by_distance.y * 100,
+                fill = shot_percentage_by_distance.y)) +
+  geom_bar(stat = "identity") +
+  labs(title = "3PT Field Goals",
+       subtitle = "2009-10 Regular Season") +
+  scale_x_continuous(name = "Shot Distance (ft)",
+                     breaks = N3,
+                     limits = c(21, 36)) +
+  scale_y_continuous(name = "Shooting Percentage",
+                     breaks = N4,
+                     limits = c(0, 50)) +
+  scale_fill_binned(low = "skyblue1", high = "firebrick") +
+  theme(legend.title = element_blank())
+
+plot1 / plot2
+```
+
+
+
+```{r}
+#2019 EDA1
+#NOTES 
+  #possibly combine charts 
+  #investigate labels
+ 
+N1 <- (0:22)
+N2 <- c(30, 50, 70)
+
+plot1 <- ggplot(shots19_pct,
+                aes(x = SHOT_DISTANCE,
+                    y = shot_percentage_by_distance.x * 100,
+                    fill = shot_percentage_by_distance.x)) +
+  geom_bar(stat = "identity") +
+  labs(title = "2PT Field Goals",
+       subtitle = "2018-19 Regular Season") +
+  scale_x_continuous(name = "Shot Distance (ft)",
+                     breaks = N1,
+                     limits = c(0, 22)) +
+  scale_y_continuous(name = "Shooting Percentage",
+                     breaks = N2,
+                     limits = c(0, 80)) +
+  scale_fill_binned(low="skyblue1", high="firebrick") +
+  theme(legend.title = element_blank())
+
+N3 <- (21:35)
+N4 <- c(10, 20, 30, 40, 50)
+
+plot2 <- ggplot(shots19_pct,
+                aes(x = SHOT_DISTANCE,
+                y = shot_percentage_by_distance.y * 100,
+                fill = shot_percentage_by_distance.y)) +
+  geom_bar(stat = "identity") +
+  labs(title = "3PT Field Goals",
+       subtitle = "2018-19 Regular Season") +
+  scale_x_continuous(name = "Shot Distance (ft)",
+                     breaks = N3,
+                     limits = c(21, 36)) +
+  scale_y_continuous(name = "Shooting Percentage",
+                     breaks = N4,
+                     limits = c(0, 50)) +
+  scale_fill_binned(low = "skyblue1", high = "firebrick") +
+  theme(legend.title = element_blank())
+
+plot1 / plot2
+```
+### Possible New Chart Configuration
+
+```{r}
+plot26 <- ggplot(shots19_pct,
+                aes(x = SHOT_DISTANCE,
+                fill = shot_percentage_by_distance.y)) +
+  geom_bar(aes(y = shot_percentage_by_distance.y * 100), stat = "identity") +
+  geom_bar(aes(y = shot_percentage_by_distance.x * 100), stat = "identity")
+  labs(title = "3PT Field Goals",
+       subtitle = "2018-19 Regular Season") +
+  scale_x_continuous(name = "Shot Distance (ft)",
+                     breaks = N3,
+                     limits = c(0, 36)) +
+  scale_y_continuous(name = "Shooting Percentage",
+                     breaks = N4,
+                     limits = c(0, 80)) +
+  scale_fill_binned(low = "skyblue1", high = "firebrick") +
+  theme(legend.title = element_blank())
+```
+
+```{r}
+# percentage of shots by area 
+N5 <- length(shots10$SHOT_ATTEMPTED_FLAG)
+N6 <- length(shots19$SHOT_ATTEMPTED_FLAG)
+
+# function to count shots by zone
+shot_counter <- function(x, y, z) {
+  a <- x %>%
+    select(SHOT_ZONE_BASIC) %>%
+    filter(SHOT_ZONE_BASIC == y)
+  b <- length(a$SHOT_ZONE_BASIC)
+  c <- b / z
+  print(c)
+}
+
+# percent of shots by area 2010
+pt10 <- shot_counter(shots10, "In The Paint (Non-RA)", N5)
+ra10 <- shot_counter(shots10, "Restricted Area", N5)
+mr10 <- shot_counter(shots10, "Mid-Range", N5)
+lc10 <- shot_counter(shots10, "Left Corner 3", N5)
+ab10 <- shot_counter(shots10, "Above the Break 3", N5)
+rc10 <- shot_counter(shots10, "Right Corner 3", N5)
+bc10 <- shot_counter(shots10, "Backcourt", N5)
+
+# percent of shots by area 2019
+pt19 <- shot_counter(shots19, "In The Paint (Non-RA)", N6)
+ra19 <- shot_counter(shots19, "Restricted Area", N6)
+mr19 <- shot_counter(shots19, "Mid-Range", N6)
+lc19 <- shot_counter(shots19, "Left Corner 3", N6)
+ab19 <- shot_counter(shots19, "Above the Break 3", N6)
+rc19 <- shot_counter(shots19, "Right Corner 3", N6)
+bc19 <- shot_counter(shots19, "Backcourt", N6)
+
+# df for 2010 plot
+pie_dat10 <- data.frame(
+  shot_zone = c("In The Paint (Non-RA)", "Restricted Area", "Mid-Range", "Left Corner 3", "Above the Break 3", "Right Corner 3", "Backcourt"),
+  percent = c(pt10, ra10, mr10, lc10, ab10, rc10, bc10)
+)
+
+# df for 2019 plot
+pie_dat19 <- data.frame(
+  shot_zone = c("In The Paint (Non-RA)", "Restricted Area", "Mid-Range", "Left Corner 3", "Above the Break 3", "Right Corner 3", "Backcourt"),
+  percent = c(pt19, ra19, mr19, lc19, ab19, rc19, bc19)
+)
+
+```
+
+
+```{r, echo = FALSE}
+# pie chart zone plots
+#NOTES
+  # add text layer please
+  # legend title!!!!
+plot3 <- ggplot(pie_dat10, aes(x="", y = percent, fill = shot_zone)) +
+  geom_bar(stat = "identity", width = 3, color = "white") +
+  coord_polar("y", start=0) +
+  theme_void() + 
+  labs(title = "Shot Distribution By Zone", subtitle = "2009-10 Regular Season") +
+  theme(legend.title = element_text("Shot Zone")) +
+  scale_fill_brewer(palette="Pastel1")
+  
+plot4 <- ggplot(pie_dat19, aes(x="", y = percent, fill = shot_zone)) +
+  geom_bar(stat = "identity", width = 3, color = "white") +
+  coord_polar("y", start=0) +
+  theme_void() + 
+  labs(title = "Shot Distribution By Zone", subtitle = "2018-19 Regular Season") +
+  theme(legend.title = element_text("Shot Zone")) +
+  scale_fill_brewer(palette="Pastel1")
+  
+#geom_text(aes(label = round(percent, digits = 3)),
+#position = position_stack(vjust = 0.5),
+#size = 2,
+#color = "white")
+
+
+
+plot3 + plot4
+```
+
+# Data Analysis
+
+```{r}
+# 2010 Shot Dist
+#NOTES 
+  # Add photo?
+
+zones <- c("Mid-Range", "Right Corner 3", "Left Corner 3", "Above the Break 3", "Backcourt")
+mypng <- readPNG("/home/jdkincan/1001-proj-final/nba_court_1.png")
+
+shots10_zone <- shots10 %>%
+  filter(SHOT_ZONE_BASIC %in% zones) 
+
+plot5 <- ggplot(shots10_zone, aes(LOC_X, LOC_Y)) + 
+  geom_hex(binwidth = 20, na.rm = FALSE) +
+  scale_fill_gradient(low="skyblue1", high="firebrick") +
+  labs(title = "All Shots Taken Outside of the Paint", subtitle = "2009-2010 NBA Season", x = "", y = "", legend = "Frequency") 
+plot5
+
+#theme_void()
+#ggdraw() +
+  #draw_image(mypng) +
+  #draw_plot(plot5/6)
+```
+
+```{r}
+shots19_zone <- shots19 %>%
+  filter(SHOT_ZONE_BASIC %in% zones)
+
+plot6 <- ggplot(shots19_zone, aes(LOC_X, LOC_Y)) + 
+  geom_hex(binwidth = 20, na.rm = FALSE) +
+  scale_fill_gradient(low="skyblue1", high="firebrick") +
+  labs(title = "All Shots Taken Outside of the Paint", subtitle = "2018-2019 NBA Season", x = "", y = "")
+plot6 
+
+```
+
+```{r}
+# shots10_pct 
+#NOTES
+  #Add Legend 
+  #label hlines
+  # text layer?
+# Data ISSUE
+ # inconsistent 3 collection
+
+plot7 <- ggplot(shots10_pct, aes(x = SHOT_DISTANCE)) +
+  geom_line(aes(y = points_per_shot.x), color = "skyblue1") +
+  geom_line(aes(y = points_per_shot.y), color = "deepskyblue1") +
+  labs(title = "Relative Value of Field Goals",
+       subtitle = "2009-10 Regular Season",
+       x = "Shot Distance (ft)",
+       y = "Points Per Shot") +
+  theme(legend.position = "right") +
+  geom_vline(xintercept = 22, color = "firebrick") +
+  geom_vline(xintercept = 23, color = "firebrick") +
+  xlim(1, 34) +
+  ylim(0.0, 1.5)
+
+plot8 <- ggplot(shots19_pct, aes(x = SHOT_DISTANCE)) +
+  geom_line(aes(y = points_per_shot.x), color = "skyblue1") +
+  geom_line(aes(y = points_per_shot.y), color = "deepskyblue1") +
+  labs(title = "Relative Value of Field Goals",
+       subtitle = "2018-19 Regular Season",
+       x = "Shot Distance (ft)",
+       y = "Points Per Shot") +
+  theme(legend.position = "right") +
+  geom_vline(xintercept = 21, color = "firebrick") +
+  geom_vline(xintercept = 23, color = "firebrick") +
+  xlim(1, 34) +
+  ylim(0.0, 1.5)
+
+plot7 + plot8
+```
+
+
+```{r}
+# percentage of shots by area 
+
+# counts total shots in each zone by year
+shot_counter1 <- function(x, y) {
+  a <- x %>%
+    select(SHOT_ZONE_BASIC) %>%
+    filter(SHOT_ZONE_BASIC == y)
+  b <- length(a$SHOT_ZONE_BASIC)
+  print(b)
+}
+
+# total number of shots by area 2010
+pt10_ct <- shot_counter1(shots10, "In The Paint (Non-RA)")
+ra10_ct <- shot_counter1(shots10, "Restricted Area")
+mr10_ct <- shot_counter1(shots10, "Mid-Range")
+lc10_ct <- shot_counter1(shots10, "Left Corner 3")
+ab10_ct <- shot_counter1(shots10, "Above the Break 3")
+rc10_ct <- shot_counter1(shots10, "Right Corner 3")
+bc10_ct <- shot_counter1(shots10, "Backcourt")
+
+# total number of shots by area 2019
+pt19_ct <- shot_counter1(shots19, "In The Paint (Non-RA)")
+ra19_ct <- shot_counter1(shots19, "Restricted Area")
+mr19_ct <- shot_counter1(shots19, "Mid-Range")
+lc19_ct <- shot_counter1(shots19, "Left Corner 3")
+ab19_ct <- shot_counter1(shots19, "Above the Break 3")
+rc19_ct <- shot_counter1(shots19, "Right Corner 3")
+bc19_ct <- shot_counter1(shots19, "Backcourt")
+
+# function to calculate points per shot by zone by year
+made_shot_counter <- function(x, y, z, w) {
+  a <- x %>%
+    select(SHOT_ZONE_BASIC, SHOT_MADE_FLAG) %>%
+    filter(SHOT_MADE_FLAG == 1, SHOT_ZONE_BASIC == y)
+  b <- length(a$SHOT_ZONE_BASIC)
+  c <- b / z
+  d <- c * w
+  print(d)
+}
+
+# total number of shots by area 2010
+pt10_pct <- made_shot_counter(shots10, "In The Paint (Non-RA)", pt10_ct, 2)
+ra10_pct <- made_shot_counter(shots10, "Restricted Area", ra10_ct, 2)
+mr10_pct <- made_shot_counter(shots10, "Mid-Range", mr10_ct, 2)
+lc10_pct <- made_shot_counter(shots10, "Left Corner 3", lc10_ct, 3)
+ab10_pct <- made_shot_counter(shots10, "Above the Break 3", ab10_ct, 3)
+rc10_pct <- made_shot_counter(shots10, "Right Corner 3", rc10_ct, 3)
+bc10_pct <- made_shot_counter(shots10, "Backcourt", bc10_ct, 3)
+
+# total number of shots by area 2019
+pt19_pct <- made_shot_counter(shots19, "In The Paint (Non-RA)", pt19_ct, 2)
+ra19_pct <- made_shot_counter(shots19, "Restricted Area", ra19_ct, 2)
+mr19_pct <- made_shot_counter(shots19, "Mid-Range", mr19_ct, 2)
+lc19_pct <- made_shot_counter(shots19, "Left Corner 3", lc19_ct, 3)
+ab19_pct <- made_shot_counter(shots19, "Above the Break 3", ab19_ct, 3)
+rc19_pct <- made_shot_counter(shots19, "Right Corner 3", rc19_ct, 3)
+bc19_pct <- made_shot_counter(shots19, "Backcourt", bc19, 3)
+
+# df for 2010 plot
+bar_dat10 <- data.frame(
+  shot_zone = c("In The Paint (Non-RA)", "Restricted Area", "Mid-Range", "Left Corner 3", "Above the Break 3", "Right Corner 3"),
+  ptspershot = c(pt10_pct, ra10_pct, mr10_pct, lc10_pct, ab10_pct, rc10_pct)
+)
+
+# df for 2019 plot
+bar_dat19 <- data.frame(
+  shot_zone = c("In The Paint (Non-RA)", "Restricted Area", "Mid-Range", "Left Corner 3", "Above the Break 3", "Right Corner 3"),
+  ptspershot = c(pt19_pct, ra19_pct, mr19_pct, lc19_pct, ab19_pct, rc19_pct)
+)
+
+# combined df
+ptsperdat <- bar_dat10 %>%
+  left_join(bar_dat19, by = "shot_zone")
+
+```
+
+```{r}
+# create another plot with zone percentage by year
+
+plot9 <- ggplot(ptsperdat, aes(x = shot_zone, y = ptspershot.x, fill = ptspershot.x)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Points Per Shot By Zone",
+       subtitle = "2009-10 Regular Season") 
+  #scale_x_discrete(name = "Shot Distance (ft)",
+                   ## limits = c(0, 22)) +
+  #scale_y_discrete(name = "Shooting Percentage",
+                    # breaks = N2,
+                    # limits = c(0, 80)) +
+  #scale_fill_binned(low="skyblue1", high="firebrick") +
+  #theme(legend.title = element_blank())
+plot9
+
+plot27 <- ggplot(ptsperdat,
+                aes(x = shot_zone)) +
+  geom_bar(aes(y = ptspershot.y), stat = "identity") +
+  geom_bar(aes(y = ptspershot.x), stat = "identity")
+plot27
+  #labs(title = "Points Per Shot By Zone",
+     #  subtitle = "2018-19 Regular Season") +
+  #scale_x_continuous(name = "Shot Distance (ft)",
+                    # breaks = N3,
+                    # limits = c(0, 36)) +
+  #scale_y_continuous(name = "Shooting Percentage",
+               #      breaks = N4,
+                 #    limits = c(0, 80)) +
+  #scale_fill_binned(low = "skyblue1", high = "firebrick") +
+  #theme(legend.title = element_blank())
+```
