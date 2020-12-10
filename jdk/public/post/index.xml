@@ -17,21 +17,21 @@
     </item>
     
     <item>
-      <title>NBA Evolution</title>
-      <link>/2020/12/08/nba-evolution/</link>
-      <pubDate>Tue, 08 Dec 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/2020/12/08/nba-evolution/</guid>
-      <description>Introduction Nearly all sports have one thing in common; a final score. It’s the most important number, and some say it’s the only one that matters. In spite of that view, many sports have been flipped on their head by a proper understanding of key numbers. My mind automatically drifts to the story told in Micheal Lewis’ “Moneyball”. In which, the MLB was revolutionized by the analytical ideas of a few baseball black sheep.</description>
-    </item>
-    
-    <item>
       <title>Technical Financial Analysis</title>
       <link>/2020/12/08/technical-financial-analysis/</link>
       <pubDate>Tue, 08 Dec 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/12/08/technical-financial-analysis/</guid>
       <description>Introduction Technical analysis has long been a core component of Finance. However, only recently has this process become automated; and we have Data Science to thank. Machine Learning Algorithms, a type of AI, are now the backbone of our major financial institutions. (story about computing race) Nearly everyone generating high profit in financial markets makes use of this technology. One of my long term goals is to build a live data algorithm that makes intelligent decisions on the fly.</description>
+    </item>
+    
+    <item>
+      <title>The NBA Evolution Visualized</title>
+      <link>/2020/12/08/nba-evolution/</link>
+      <pubDate>Tue, 08 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/12/08/nba-evolution/</guid>
+      <description>Introduction Nearly all sports have one thing in common; a final score. It’s the most important number, and some say it’s the only one that matters. In spite of that view, many sports have been flipped on their head by a proper understanding of key numbers. My mind automatically drifts to the story told in Micheal Lewis’ “Moneyball”. In which, the MLB was revolutionized by the analytical ideas of a few baseball black sheep.</description>
     </item>
     
   </channel>

@@ -6,8 +6,8 @@
 <meta name="generator" content="Hugo 0.79.0" />
 
 
-<title>NBA Evolution - Jack D Kincannon</title>
-<meta property="og:title" content="NBA Evolution - Jack D Kincannon">
+<title>The NBA Evolution Visualized - Jack D Kincannon</title>
+<meta property="og:title" content="The NBA Evolution Visualized - Jack D Kincannon">
 
 
   <link href='/favicon.ico' rel='icon' type='image/x-icon'/>
@@ -64,10 +64,10 @@
 
   <article class="article">
     
-    <span class="article-duration">14 min read</span>
+    <span class="article-duration">15 min read</span>
     
 
-    <h1 class="article-title">NBA Evolution</h1>
+    <h1 class="article-title">The NBA Evolution Visualized</h1>
 
     
     <span class="article-date">2020-12-08</span>
@@ -82,8 +82,8 @@
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
 <p>Nearly all sports have one thing in common; a final score. It’s the most important number, and some say it’s the only one that matters. In spite of that view, many sports have been flipped on their head by a proper understanding of key numbers. My mind automatically drifts to the story told in Micheal Lewis’ <em>“Moneyball”</em>. In which, the MLB was revolutionized by the analytical ideas of a few baseball black sheep. Like many other leagues, the NBA was not immune to this revolution. Economics and statistics have transformed the league. With a focus on reaching maximum point scoring efficiency. The comprehensive story is beautifully told in Kirk Goldsberry’s book <em>“Sprawlball”</em>. The novel shows how quantitative analysis pushed all NBA teams to dramatically change their strategy. My analysis will ultimately determine if better “Sprawlball” execution results in more games won. This will be achieved through exploration of key questions.</p>
-<div id="key-questions" class="section level3">
-<h3>Key Questions</h3>
+<div id="key-questions" class="section level2">
+<h2>Key Questions</h2>
 <ol style="list-style-type: decimal">
 <li>What is “Sprawlball”?</li>
 <li>What led NBA teams to adopt this new strategy?</li>
@@ -255,7 +255,6 @@ plot2 &lt;- ggplot(shots19_pct,
 plot1 / plot2</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>These plots are meant to look at the problem from a very basic level. However, already we see relationships forming in the data. Those with a keen eye will notice that there is not a significant decrease in shot percentage from once you cross the 3pt line at roughly 22ft. Players are generally consistent when shooting from about 3-25 ft. This fact will give rise to extremely important information in the data analysis section.</p>
-<p>Speaking of, shot distance was an interesting challenge that I faced.</p>
 <pre class="r"><code># percentage of shots by area 
 N5 &lt;- length(shots10$SHOT_ATTEMPTED_FLAG)
 N6 &lt;- length(shots19$SHOT_ATTEMPTED_FLAG)
@@ -342,11 +341,14 @@ plot4 &lt;- ggplot(pie_dat19, aes(x=&quot;&quot;, y = percent, fill = shot_zone)
   scale_fill_brewer(palette=&quot;Pastel1&quot;)
 
 plot3 + plot4</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" width="672" />
-Here you can see how frequently players shoot in certain zones relative to one another. The drastic change seen in this graph is yet another fundamental component of <em>“Sprawlball”</em>, that connects right back to the first set of plots. As mentioned, the shooting percentage does not decrease by a significant amount (hypoth test) per ft once you go outside of the restricted area. This explains the contraction in the “Mid-Range” and the near doubling of the “Above the Break 3”. Why do more for less? Is probably a question players have asked themselves. Stepping back to launch an open 3 has become the most profitable play in basketball. In the next section I’ll get specific on what exactly this strategy is and why it is so popular today.</p>
+<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>Here you can see how frequently players shoot in certain zones relative to one another. The drastic change seen in this graph is yet another fundamental component of <em>“Sprawlball”</em>, that connects right back to the first set of plots. As mentioned, the shooting percentage does not decrease by a significant amount (hypoth test) per ft once you go outside of the restricted area. This explains the contraction in the “Mid-Range” and the near doubling of the “Above the Break 3”. Why do more for less? Is probably a question players have asked themselves. Stepping back to launch an open 3 has become the most profitable play in basketball. In the next section I’ll get specific on what exactly this strategy is and why it is so popular today.</p>
 </div>
 <div id="data-analysis" class="section level1">
 <h1>Data Analysis</h1>
+<div id="question-1" class="section level2">
+<h2>Question 1</h2>
+<p>What is “Sprawlball”?</p>
 <pre class="r"><code>zones &lt;- c(&quot;Mid-Range&quot;, &quot;Right Corner 3&quot;, &quot;Left Corner 3&quot;, &quot;Above the Break 3&quot;, &quot;Backcourt&quot;)
 
 shots10_zone &lt;- shots10 %&gt;%
@@ -369,7 +371,11 @@ plot6 &lt;- ggplot(shots19_zone, aes(LOC_X, LOC_Y)) +
 
 plot6 </code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-9-1.png" width="672" />
-These two plots are easily my favorite. The way the transition is so clearly portrayed excites me.</p>
+That is “Sprawlball”. This shooting distribution is essential to the strategy. At a basic level it attempts to spread the floor in order to take as many high value shots as possible. Here we see a clearly defined transition over just 9 years, with shots becoming more concentrated around high value areas. Without so much as a picture to help plot the 3pt line, it’s there. In the 2019 data, the line appears in stark contrast with the rest of the floor. We are now realizing the full potential of what the line brings to the game. As players get better at shooting long shots the value of a 3pter continues to rise. This information is clearly displayed in the plots below, and will be further explored throughout the analysis.</p>
+</div>
+<div id="question-2" class="section level2">
+<h2>Question 2</h2>
+<p>What led NBA teams to adopt this new strategy?</p>
 <pre class="r"><code># shots10_pct 
 #NOTES
   #Add Legend 
@@ -405,8 +411,11 @@ plot8 &lt;- ggplot(shots19_pct, aes(x = SHOT_DISTANCE)) +
   ylim(0.0, 1.5)
 
 plot7 + plot8</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
-<pre class="r"><code># percentage of shots by area 
+<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" width="672" />
+This graph makes the strategy extremely clear. 3 pointers and layups are the only things worth over 1 point per shot, by a lot.</p>
+<pre class="r"><code>#HIDE OUTPUT
+
+# percentage of shots by area 
 
 # counts total shots in each zone by year
 shot_counter1 &lt;- function(x, y) {
@@ -503,19 +512,14 @@ bar_dat19 &lt;- data.frame(
 # combined df
 ptsperdat &lt;- bar_dat10 %&gt;%
   left_join(bar_dat19, by = &quot;shot_zone&quot;)</code></pre>
+<p>The chunk above makes analysis of shot percentage by zone a reality. Therefore this data can also be used to visualize points per shot by zone. I hope to join this dataset with the main df to plot points per shot by zone, in the same style as the stock distributions.</p>
 <pre class="r"><code># create another plot with zone percentage by year
+# clean up graphs 
 
 plot9 &lt;- ggplot(ptsperdat, aes(x = shot_zone, y = ptspershot.x, fill = ptspershot.x)) +
   geom_bar(stat = &quot;identity&quot;) +
   labs(title = &quot;Points Per Shot By Zone&quot;,
        subtitle = &quot;2009-10 Regular Season&quot;) 
-  #scale_x_discrete(name = &quot;Shot Distance (ft)&quot;,
-                   ## limits = c(0, 22)) +
-  #scale_y_discrete(name = &quot;Shooting Percentage&quot;,
-                    # breaks = N2,
-                    # limits = c(0, 80)) +
-  #scale_fill_binned(low=&quot;skyblue1&quot;, high=&quot;firebrick&quot;) +
-  #theme(legen![](/2020-12-08-nba-evolution/index_files/nba-basketball-iso.png)d.title = element_blank())
 plot9</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <pre class="r"><code>plot27 &lt;- ggplot(ptsperdat,
@@ -534,7 +538,24 @@ plot27</code></pre>
                  #    limits = c(0, 80)) +
   #scale_fill_binned(low = &quot;skyblue1&quot;, high = &quot;firebrick&quot;) +
   #theme(legend.title = element_blank())</code></pre>
+</div>
+</div>
+<div id="question-3" class="section level1">
+<h1>Question 3</h1>
+<p>How can proper strategy execution be quantified?</p>
+<pre class="r"><code># create statistic that combines 
+  # points per shot, 2pt shooting percentage, 3pt attempted percentage, shots by zone, fouls?
+  # create formula that combines these values into one easily readable statistic that can be evaluated on a continuous scale</code></pre>
+</div>
+<div id="conclusion" class="section level1">
+<h1>Conclusion</h1>
+<p>I think I can say without a doubt that this change is for the better, as far as team preformance goes. The analysis already provided should be enough to prove this, however I want to extract specific statistical test values that prove the point.</p>
+<p>TBC</p>
+<div id="sources" class="section level2">
+<h2>Sources</h2>
+<p><a href="https://datavizardry.com/2020/01/28/nba-shot-charts-part-1/" class="uri">https://datavizardry.com/2020/01/28/nba-shot-charts-part-1/</a></p>
 <p><a href="https://stats.nba.com/stats/shotchartdetail" class="uri">https://stats.nba.com/stats/shotchartdetail</a></p>
+</div>
 </div>
 
     </div>
