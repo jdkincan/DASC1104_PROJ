@@ -21,11 +21,12 @@ library(magick)
 library(png)
 theme_set(theme_cowplot())
 ```
+
 # Introduction 
 
   Nearly all sports have one thing in common; a final score. It’s the most important number, and some say it’s the only one that matters. In spite of that view, many sports have been flipped on their head by a proper understanding of key numbers. My mind automatically drifts to the story told in Micheal Lewis’ _“Moneyball”_.  In which, the MLB was revolutionized by the analytical ideas of a few baseball black sheep. Like many other leagues, the NBA was not immune to this revolution. Economics and statistics have transformed the league. With a focus on reaching maximum point scoring efficiency. The comprehensive story is beautifully told in Kirk Goldsberry’s book _“Sprawlball”_. The novel shows how quantitative analysis pushed all NBA teams to dramatically change their strategy. My analysis will ultimately determine if better “Sprawlball” execution results in more games won. This will be achieved through exploration of key questions. 
 
-## Key Questions
+### Key Questions
 
 1. What is “Sprawlball”?
 2. What led NBA teams to adopt this new strategy?
@@ -33,7 +34,6 @@ theme_set(theme_cowplot())
 
 To examine this topic I collected advanced shot data directly form the NBA Stats website. I made use of a python web-scraper that included the requests and json modules. A tutorial was used to help build the web-scraper. (If you'd like to try for yourself the link is posted below.) The data includes every shot taken during the 2009-2010 and the 2018-2019 NBA Regular Seasons. It includes an impressive amount of variables that describe everything you could need. 
 
-https://stats.nba.com/stats/shotchartdetail
 # Exploratory Data Analysis 
 
 ```{r, message=FALSE, echo=FALSE}
@@ -95,9 +95,6 @@ shots10_pct <- shots10_2pt %>%
 # 2019 shots
 shots19_pct <- shots19_2pt %>%
   full_join(shots19_3pt, by = "SHOT_DISTANCE")
-
-glimpse(shots19_pct)
-glimpse(shots10_pct)
 ```
 
 After examining the dataset, lets draw out some information and plot it over SHOT_DISTANCE by season. The code chunk above's purpose is to efficiently store new variables that I created. These variables are shot percentage by distance, and points per shot by distance. Both of these values are critical in explaining how _"Sprawlball"_ works and why it is so effective. 
@@ -147,8 +144,6 @@ plot2 <- ggplot(shots10_pct,
 
 plot1 / plot2
 ```
-
-# 2019 EDA 1
 
 ```{r, warning = FALSE}
 N1 <- (0:22)
@@ -280,6 +275,8 @@ Here you can see how frequently players shoot in certain zones relative to one a
  
 # Data Analysis
 
+### What is Sprawlball?
+
 ```{r}
 zones <- c("Mid-Range", "Right Corner 3", "Left Corner 3", "Above the Break 3", "Backcourt")
 
@@ -305,8 +302,11 @@ plot6 <- ggplot(shots19_zone, aes(LOC_X, LOC_Y)) +
 
 plot6 
 ```
+That is "Sprawlball". This shooting distribution is essential to the strategy. At a basic level it attempts to spread the floor in order to take as many high value shots as possible. Here we see a clearly defined transition over just 9 years, with shots becoming more concentrated around high value areas. Without so much as a picture to help plot the 3pt line, it's there. In the 2019 data, the line appears in stark contrast with the rest of the floor. We are now realizing the full potential of what the line brings to the game. As players get better at shooting longer shots 
 
-```{r}
+
+These two plots are easily my favorite. The way the transition is so clearly portrayed excites me. Without even a picture to help plot the 3 point line it's there. In the 2019 data, the line appears in stark contrast with the rest of the floor. We are now realizing  
+```{r, warning=FALSE}
 # shots10_pct 
 #NOTES
   #Add Legend 
@@ -331,7 +331,7 @@ plot7 <- ggplot(shots10_pct, aes(x = SHOT_DISTANCE)) +
 plot8 <- ggplot(shots19_pct, aes(x = SHOT_DISTANCE)) +
   geom_line(aes(y = points_per_shot.x), color = "skyblue1") +
   geom_line(aes(y = points_per_shot.y), color = "deepskyblue1") +
-  labs(title = "Relative Value of Field Goals",
+  labs(title = "",
        subtitle = "2018-19 Regular Season",
        x = "Shot Distance (ft)",
        y = "Points Per Shot") +

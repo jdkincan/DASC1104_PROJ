@@ -9,20 +9,35 @@ output: pdf_document
 <script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 
-<div id="r-markdown" class="section level2">
-<h2>R Markdown</h2>
-<p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
-<p>When you click the <strong>Knit</strong> button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Blackjack is known around the world as a timeless casino game. The rules are fairly simple, but the depth is shocking. Someone can play for years and still not have seen all the possibilities at a table. However, just like any other card game, basic probabilities can be calculated, and therefore an optimal strategy can be determined. In this analysis, I hope to showcase my data science skill by visualizing blackjack, and its infinite probabilities. Additionally, I hope to provide reasoning for why blackjack is played with a predetermined strategy.</p>
+<div id="core-questions" class="section level2">
+<h2>Core Questions</h2>
+<ol style="list-style-type: decimal">
+<li>What is the expected value of a blackjack hand?</li>
+<li>When is probability in the players favor?</li>
+<li>How can a player maximize their expected value?</li>
+</ol>
 <pre class="r"><code>dat1 &lt;- read_csv(&quot;data/blkjckhands.csv&quot;)</code></pre>
 <pre><code>## Warning: Missing column names filled in: &#39;X1&#39; [1]</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_double(),
+##   PlayerNo = col_character(),
+##   blkjck = col_character(),
+##   winloss = col_character(),
+##   plybustbeat = col_character(),
+##   dlbustbeat = col_character()
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
 <pre><code>## Warning: 1 parsing failure.
 ##    row col   expected    actual                   file
 ## 898078  -- 21 columns 5 columns &#39;data/blkjckhands.csv&#39;</code></pre>
-<pre class="r"><code>dat2 &lt;- read_csv(&quot;data/all_stocks_5yr.csv&quot;)</code></pre>
-<pre><code>## Warning: 2 parsing failures.
-##    row  col   expected    actual                      file
-## 618445 date date like  2015-09   &#39;data/all_stocks_5yr.csv&#39;
-## 618445 NA   7 columns  1 columns &#39;data/all_stocks_5yr.csv&#39;</code></pre>
+</div>
+</div>
+<div id="exploratory-data-analysis" class="section level1">
+<h1>Exploratory Data Analysis</h1>
 <pre class="r"><code>glimpse(dat1)</code></pre>
 <pre><code>## Observations: 898,078
 ## Variables: 21
@@ -47,99 +62,217 @@ output: pdf_document
 ## $ plwinamt    &lt;dbl&gt; 0, 20, 0, 0, 0, 0, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20…
 ## $ dlwinamt    &lt;dbl&gt; 10, 0, 10, 10, 10, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
 ## $ ply2cardsum &lt;dbl&gt; 17, 19, 17, 12, 12, 7, 14, 13, 12, 15, 14, 8, 12, 19, 6, …</code></pre>
-<pre class="r"><code>#if (dat1$winloss == &quot;win&quot;) {
-  # create a new column
-#}
-# create new binary winloss variables 
-
-# summary statistics for interesting values ply2cardsum/card1/card2/dealcard1/dealcard2/winloss/blkjack
-summary(dat1$ply2cardsum)</code></pre>
+<p>For this project, I am examining a dataset that contains 90,000 blackjack hands with 6 players per hand. The data is stored in the blkjckhands.csv and it was downloaded from a repository on Kaggle that is linked below. The data consists of 898,078 observations of 21 variables. The variables X1 and PlayerNo describe the 6 players present in each hand, they are dbl numeric and a character string respectively. The variables: card1, card2, card3, card4, card5, dealcard1, dealcard2, dealcard3, dealcard4, and dealcard5 describe the numeric value of the card dealt. The number at the end of the variable name corresponds to which card was dealt first in the sequence. If no card is dealt 0 takes the place of NA. Variables sumofcards and sumofdeal are numeric values which total to the value of the cards dealt to each player and the dealer, per hand, respectively. Blkjck is a simple character string with two unique values nowin and win. Winloss describes each players outcome simplistically per hand. Character strings Loss and Win are the two options. Variables plybustbeat and dlbustbeat describe the hand outcome in more detail with unique values Beat, Plwin, Bust, DlBust, and Push for plybustbeat with Dlwin, Beat, PlBust, Bust, and Push for dlbustbeat. Each of these variables are of class character. Plwinamt and dlwinamt describe the hand outcome monetarily. These values are numeric and a base bet of $10 is assumed for each player each hand. The final variable play2cardsum is interesting. It describes the starting position from which players will make their decisions.</p>
+<pre class="r"><code>summary(dat1$ply2cardsum)</code></pre>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
 ##    2.00   12.00   14.00   14.22   18.00   21.00       1</code></pre>
+<pre class="r"><code>ggplot(dat1, aes(ply2cardsum)) +
+  geom_bar() +
+  labs(title = &quot;Frequency of Player Starting Hands&quot;,
+       x = &quot;Player 2 Card Sum&quot;,
+       y = &quot;Frequency&quot;) +
+  scale_x_discrete(limit = 2:21, breaks = 2:21)</code></pre>
+<p><img src="./blackjack_analysis_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <pre class="r"><code>summary(dat1$card1)</code></pre>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##   1.000   5.000   8.000   7.126  10.000  11.000</code></pre>
-<pre class="r"><code>summary(dat1$card2)</code></pre>
-<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    1.00    4.00    8.00    7.09   10.00   11.00</code></pre>
+<pre class="r"><code>ggplot(dat1, aes(card1)) +
+  geom_bar() +
+  labs(title = &quot;Frequency of Player Card 1&quot;,
+       x = &quot;Player Card 1&quot;,
+       y = &quot;Frequency&quot;) +
+  scale_x_discrete(limit = 1:11, breaks = 1:11)</code></pre>
+<p><img src="./blackjack_analysis_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <pre class="r"><code>summary(dat1$dealcard1)</code></pre>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
 ##   1.000   5.000   8.000   7.171  10.000  11.000       1</code></pre>
-<pre class="r"><code>summary(dat1$dealcard2)</code></pre>
+<pre class="r"><code>ggplot(dat1, aes(dealcard1)) +
+  geom_bar() +
+  labs(title = &quot;Frequency of Dealer Card 1&quot;,
+       x = &quot;Dealer Card 1&quot;,
+       y = &quot;Frequency&quot;) +
+  scale_x_discrete(limit = 1:11, breaks = 1:11)</code></pre>
+<p><img src="./blackjack_analysis_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>summary(dat1$sumofdeal)</code></pre>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
-##    1.00    5.00    8.00    7.13   10.00   11.00       1</code></pre>
-<pre class="r"><code>summary(dat1$winloss)</code></pre>
-<pre><code>##    Length     Class      Mode 
-##    898078 character character</code></pre>
-<pre class="r"><code># create new variables
-summary(dat1$blkjck)</code></pre>
-<pre><code>##    Length     Class      Mode 
-##    898078 character character</code></pre>
+##     8.0    18.0    20.0    20.3    22.0    26.0       1</code></pre>
+<pre class="r"><code>ggplot(dat1, aes(sumofdeal)) +
+  geom_bar() +
+  labs(title = &quot;Frequency of Dealer Card Sum&quot;,
+       x = &quot;Dealer Card Sum&quot;,
+       y = &quot;Frequency&quot;) +
+  scale_x_discrete(limits = 8:26, breaks = 8:26)</code></pre>
+<p><img src="./blackjack_analysis_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>summary(dat1$sumofcards)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##     8.0    17.0    19.0    18.9    21.0    26.0       1</code></pre>
+<pre class="r"><code>ggplot(dat1, aes(sumofcards)) +
+  geom_bar() +
+  labs(title = &quot;Frequency of Player Card Sum&quot;,
+       x = &quot;Player Card Sum&quot;,
+       y = &quot;Frequency&quot;) +
+  scale_x_discrete(limits = 8:26, breaks = 8:26)</code></pre>
+<pre><code>## Warning: Continuous limits supplied to discrete scale.
+## Did you mean `limits = factor(...)` or `scale_*_continuous()`?</code></pre>
+<pre><code>## Warning: Removed 1 rows containing non-finite values (stat_count).</code></pre>
+<p><img src="./blackjack_analysis_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code>summary(dat1$plwinamt)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##   0.000   0.000  10.000   9.723  20.000  25.000       1</code></pre>
+<pre class="r"><code>summary(dat1$dlwinamt)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##   0.000   0.000   0.000   4.776  10.000  10.000       1</code></pre>
+<p>In a blackjack game, like the one being analyzed, each player receives two cards. Possible values range from 1-11 for each card, and 2-21 for the total hand value. The dealer is also dealt two cards, however one is face down. This forces the player to make a decision based on limited information. The player must choose to hit or stand.* All while playing against the dealer who has a hidden card. Another catch is that the dealer must stand on any 17. The object of the game is to beat the dealer by gaining a hand valued higher than theirs without exceeding 21. Above, I have calculated the summary statistics for important values. The values included will be the basis for my analysis. The trade secrets of blackjack known by players as “The Book” hides in the numbers shown above.</p>
+<p>*Other options that I won’t dive into for purposes of this analysis: double down, split.</p>
+</div>
+<div id="data-analysis" class="section level1">
+<h1>Data Analysis</h1>
+<div id="question-1" class="section level2">
+<h2>Question 1</h2>
+<p>Expected value is a very useful tool for determining the underlying value in a game or market. Blackjack is no different. To calculate expected value multiply the monetary win/loss by the chance that thing happens. Then add up all the individual values to determine your expected value for the game. Below I have calculated the expected value of this blackjack data.</p>
+<pre class="r"><code># percent chance dealer bust
+# percent chance of plwin
+windat &lt;- dat1 %&gt;%
+  filter(plwinamt == 20) %&gt;%
+  summarise(win_count = n()) 
+
+totl_dat &lt;- dat1 %&gt;%
+  summarise(totl_count = n())
+
+win_pct &lt;- max(windat$win_count) / max(totl_dat$totl_count)
+win_pct</code></pre>
+<pre><code>## [1] 0.3865822</code></pre>
+<p>Above is the chance a player wins, without getting a blackjack.</p>
+<pre class="r"><code># percent chance of plpush
+pushdat &lt;- dat1 %&gt;%
+  filter(plwinamt == 10) %&gt;%
+  summarise(push_count = n()) 
+
+totl_dat &lt;- dat1 %&gt;%
+  summarise(totl_count = n())
+
+push_pct &lt;- max(pushdat$push_count) / max(totl_dat$totl_count)
+push_pct</code></pre>
+<pre><code>## [1] 0.09360768</code></pre>
+<p>The percent chance of a push is shown above.</p>
+<pre class="r"><code># percent chance of plloss
+lossdat &lt;- dat1 %&gt;%
+  filter(plwinamt == 0) %&gt;%
+  summarise(loss_count = n()) 
+
+totl_dat &lt;- dat1 %&gt;%
+  summarise(totl_count = n())
+
+loss_pct &lt;- max(lossdat$loss_count) / max(totl_dat$totl_count)
+loss_pct</code></pre>
+<pre><code>## [1] 0.4775966</code></pre>
+<p>The percent chance of a loss is shown above.</p>
+<pre class="r"><code># pct chance of blackjack if win 
+blkjckdat &lt;- dat1 %&gt;%
+  filter(plwinamt == 25) %&gt;%
+  summarise(blkjck_count = n()) 
+
+blkjck_true_pct &lt;- max(blkjckdat$blkjck_count) / max(totl_dat$totl_count)
+blkjck_true_pct</code></pre>
+<pre><code>## [1] 0.04221237</code></pre>
+<p>The chance a player wins, while also receiving a blackjack.</p>
+<pre class="r"><code># calculate expected value
+ex1 &lt;- 15 * blkjck_true_pct
+ex2 &lt;- 10 * win_pct
+ex3 &lt;- -10 * loss_pct
+ex4 &lt;- 0 * push_pct
+
+EV &lt;- ex1 + ex2 +ex3 + ex4
+EV</code></pre>
+<pre><code>## [1] -0.2769581</code></pre>
+<p>By combining the probabilities listed, I calculated the true expected value of this blackjack game. The output represents what a player stands to lose on each hand on average. This is assuming the player bets $10 each time and blackjacks are payed out 3:2.</p>
+<p>If we exclude the probability of a push the house edge can be easily calculated.</p>
+<pre class="r"><code>true_win_pct &lt;- blkjck_true_pct + win_pct 
+house_edge_pct &lt;- loss_pct - true_win_pct 
+house_edge_pct</code></pre>
+<pre><code>## [1] 0.048802</code></pre>
+<p>This chunk calculates the house edge to be just under 5 percent. Which leads perfectly into my next question.</p>
+</div>
+<div id="question-2" class="section level2">
+<h2>Question 2</h2>
 <pre class="r"><code># first vis
 # x needs to be play2cardsum/sumofcards and y is percentage of win/loss
-
-# second vis
+x1 &lt;- c(20, 25)
+plhand_count &lt;- dat1 %&gt;%
+  group_by(ply2cardsum) %&gt;%
+  summarise(count = n(), .groups = &quot;keep&quot;)
+glimpse(plhand_count)</code></pre>
+<pre><code>## Observations: 21
+## Variables: 2
+## Groups: ply2cardsum [21]
+## $ ply2cardsum &lt;dbl&gt; 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 1…
+## $ count       &lt;int&gt; 1594, 4044, 10155, 16622, 22269, 28671, 26418, 31866, 372…</code></pre>
+<pre class="r"><code>plhand_win &lt;- dat1 %&gt;%
+  group_by(ply2cardsum) %&gt;%
+  filter(plwinamt %in% x1) %&gt;%
+  summarise(win_count = n(), .groups = &quot;keep&quot;)
+glimpse(plhand_win)</code></pre>
+<pre><code>## Observations: 20
+## Variables: 2
+## Groups: ply2cardsum [20]
+## $ ply2cardsum &lt;dbl&gt; 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 1…
+## $ win_count   &lt;int&gt; 523, 1239, 3330, 5318, 7108, 9401, 10241, 14042, 18582, 2…</code></pre>
+<pre class="r"><code>plwin_pct &lt;- plhand_count %&gt;%
+  left_join(plhand_win) %&gt;%
+  summarise(percent_win = win_count / count, .groups = &quot;keep&quot;)</code></pre>
+<pre><code>## Joining, by = &quot;ply2cardsum&quot;</code></pre>
+<pre class="r"><code>plot1 &lt;- ggplot(plwin_pct, aes(ply2cardsum, percent_win * 100)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  labs(title = &quot;Chance of Win vs. 2 Card Sum&quot;, 
+       x = &quot;Player 2 Card Sum&quot;,
+       y = &quot;Player Win Percentage&quot;) +
+  scale_x_discrete(limits = (2:21), breaks = 1:21)</code></pre>
+<pre><code>## Warning: Continuous limits supplied to discrete scale.
+## Did you mean `limits = factor(...)` or `scale_*_continuous()`?</code></pre>
+<pre class="r"><code>plot1</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (position_stack).</code></pre>
+<p><img src="./blackjack_analysis_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<pre class="r"><code>dlhand_count &lt;- dat1 %&gt;%
+  group_by(dealcard2) %&gt;%
+  summarise(count = n(), .groups = &quot;keep&quot;)
+glimpse(dlhand_count)</code></pre>
+<pre><code>## Observations: 12
+## Variables: 2
+## Groups: dealcard2 [12]
+## $ dealcard2 &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, NA
+## $ count     &lt;int&gt; 15474, 69984, 68370, 68730, 69120, 70188, 68694, 69258, 689…</code></pre>
+<pre class="r"><code>dlhand_win &lt;- dat1 %&gt;%
+  group_by(dealcard2) %&gt;%
+  filter(dlwinamt == 10) %&gt;%
+  summarise(win_count = n(), .groups = &quot;keep&quot;)
+glimpse(dlhand_win)</code></pre>
+<pre><code>## Observations: 11
+## Variables: 2
+## Groups: dealcard2 [11]
+## $ dealcard2 &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+## $ win_count &lt;int&gt; 5705, 32062, 31303, 32050, 31781, 30659, 27354, 29794, 3143…</code></pre>
+<pre class="r"><code>dlwin_pct &lt;- dlhand_count %&gt;%
+  left_join(dlhand_win) %&gt;%
+  summarise(percent_win = win_count / count)</code></pre>
+<pre><code>## Joining, by = &quot;dealcard2&quot;</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre class="r"><code>plot2 &lt;- ggplot(dlwin_pct, aes(dealcard2, percent_win)) +
+  geom_bar(stat = &quot;identity&quot;)
+plot2</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (position_stack).</code></pre>
+<p><img src="./blackjack_analysis_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<pre class="r"><code># second vis
 # x is dealcard1 and y is winloss/dlbustbeat
 
-# third vis 
-# ply2cardsum y is percent plybustbeat
-
-# plot blackjacks for fun </code></pre>
+ggplot(dat1, aes(dealcard1, ))</code></pre>
+<p><img src="./blackjack_analysis_files/figure-html/unnamed-chunk-17-2.png" width="672" /></p>
+<pre class="r"><code># third vis 
+# ply2cardsum y is percent plybustbeat</code></pre>
 <pre class="r"><code>#Determine hit or stand based on ply2cardsum
 
 #determine hit or stand based on dealcard1
 
 # combine the two, show chart of all possibilities 
 # ply2card sum (or possible hands) == rows and dealcard1 == col</code></pre>
-<pre class="r"><code>glimpse(dat2)</code></pre>
-<pre><code>## Observations: 618,445
-## Variables: 7
-## $ date   &lt;date&gt; 2013-02-08, 2013-02-11, 2013-02-12, 2013-02-13, 2013-02-14, 2…
-## $ open   &lt;dbl&gt; 15.07, 14.89, 14.45, 14.30, 14.94, 13.93, 14.33, 14.17, 13.62,…
-## $ high   &lt;dbl&gt; 15.12, 15.01, 14.51, 14.94, 14.96, 14.61, 14.56, 14.26, 13.95,…
-## $ low    &lt;dbl&gt; 14.63, 14.26, 14.10, 14.25, 13.16, 13.93, 14.08, 13.15, 12.90,…
-## $ close  &lt;dbl&gt; 14.75, 14.46, 14.27, 14.66, 13.99, 14.50, 14.26, 13.33, 13.37,…
-## $ volume &lt;dbl&gt; 8407500, 8882000, 8126000, 10259500, 31879900, 15628000, 11354…
-## $ Name   &lt;chr&gt; &quot;AAL&quot;, &quot;AAL&quot;, &quot;AAL&quot;, &quot;AAL&quot;, &quot;AAL&quot;, &quot;AAL&quot;, &quot;AAL&quot;, &quot;AAL&quot;, &quot;AAL&quot;,…</code></pre>
 </div>
-<div id="stock-analysis" class="section level2">
-<h2>Stock Analysis</h2>
-<pre class="r"><code># pick stock and find S&amp;P total value
-
-# plot some summary stats for stock/S&amp;P price/volume/TTR</code></pre>
-<pre class="r"><code>open1 &lt;- na.omit(dat2$open)
-close1 &lt;- na.omit(dat2$close)
-high1 &lt;- na.omit(dat2$high)
-low1 &lt;- na.omit(dat2$low)
-
-# dat3 &lt;- data.frame(high = high1, low = low1, close = close1, check.rows = FALSE)
-# attempt at making a high-low-close df for BBands
-
-rsi_dat &lt;- dat2 %&gt;%
-  summarise(rsi = RSI(open1, n = 14, maType = &quot;SMA&quot;))
-
-volatility_dat &lt;- dat2 %&gt;%
-  summarise(vol = volatility(close1, n = 10, calc = &quot;close&quot;, N = 260))
-
-#bbands_dat &lt;- dat2 %&gt;%
-  #select(high, low, close)
-
-bbands &lt;- BBands(close1, n = 20, maType = SMA)
-# try to compute bbands with high-low-close
-
-momentum_dat &lt;- dat2 %&gt;%
-  summarise(momentum(close1, n = 1))
-# perhaps compare long momentum and short momentum in some way?
-
-macd_dat &lt;- dat2 %&gt;%
-  summarise(macd = MACD(open1, nFast=12, nSlow=26, nSig=9, maType= &quot;SMA&quot;, percent = FALSE))</code></pre>
-<pre class="r"><code># identify and explain all indicators 
-
-# q1 part 2 
-# plot all indicators over full time period
-
-# describe signals and draw circles/lines on plot to show 
-
-# DONT DO Q2 twice double check PROJ PROPOSAL</code></pre>
-<p>Note that the <code>echo = FALSE</code> parameter was added to the code chunk to prevent printing of the R code that generated the plot.</p>
 </div>

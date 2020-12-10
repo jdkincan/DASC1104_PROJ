@@ -12,39 +12,103 @@ library(dplyr)
 library(ggplot2)
 library(patchwork)
 library(TTR)
+library(cowplot)
+theme_set(theme_cowplot())
 ```
 
-## R Markdown
+# Introduction
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+  Blackjack is known around the world as a timeless casino game. The rules are fairly simple, but the depth is shocking. Someone can play for years and still not have seen all the possibilities at a table. However, just like any other card game, basic probabilities can be calculated, and therefore an optimal strategy can be determined. In this analysis, I hope to showcase my data science skill by visualizing blackjack, and its infinite probabilities. Additionally, I hope to provide reasoning for why blackjack is played with a predetermined strategy. 
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+## Core Questions
 
-```{r, message=FALSE}
+1. What is the expected value of a blackjack hand?
+2. When is probability in the players favor?
+3. How can a player maximize their expected value?
+
+```{r}
 dat1 <- read_csv("data/blkjckhands.csv")
 ```
+# Exploratory Data Analysis 
 
 ```{r}
 glimpse(dat1)
 ```
+  For this project, I am examining a dataset that contains 90,000 blackjack hands with 6 players per hand. The data is stored in the blkjckhands.csv and it was downloaded from a repository on Kaggle that is linked below. The data consists of 898,078 observations of 21 variables. The variables X1 and PlayerNo describe the 6 players present in each hand, they are dbl numeric and a character string respectively. The variables: card1, card2, card3, card4, card5, dealcard1, dealcard2, dealcard3, dealcard4, and dealcard5 describe the numeric value of the card dealt. The number at the end of the variable name corresponds to which card was dealt first in the sequence. If no card is dealt 0 takes the place of NA. Variables sumofcards and sumofdeal are numeric values which total to the value of the cards dealt to each player and the dealer, per hand, respectively. Blkjck is a simple character string with two unique values nowin and win. Winloss describes each players outcome simplistically per hand. Character strings Loss and Win are the two options. Variables plybustbeat and dlbustbeat describe the hand outcome in more detail with unique values Beat, Plwin, Bust, DlBust, and Push for plybustbeat with Dlwin, Beat, PlBust, Bust, and Push for dlbustbeat. Each of these variables are of class character. Plwinamt and dlwinamt describe the hand outcome monetarily. These values are numeric and a base bet of $10 is assumed for each player each hand. The final variable play2cardsum is interesting. It describes the starting position from which players will make their decisions. 
 
-```{r}
-# create new binary winloss variables 
-
-# summary statistics for interesting values ply2cardsum/card1/card2/dealcard1/dealcard2/winloss/blkjack
+```{r, warning = FALSE}
 summary(dat1$ply2cardsum)
-summary(dat1$card1)
-summary(dat1$card2)
-summary(dat1$dealcard1)
-summary(dat1$dealcard2)
-summary(dat1$plwinamt)
-summary(dat1$dlwinamt)
+
+ggplot(dat1, aes(ply2cardsum)) +
+  geom_bar() +
+  labs(title = "Frequency of Player Starting Hands",
+       x = "Player 2 Card Sum",
+       y = "Frequency") +
+  scale_x_discrete(limit = 2:21, breaks = 2:21)
 ```
 
+```{r, warning = FALSE}
+summary(dat1$card1)
+
+ggplot(dat1, aes(card1)) +
+  geom_bar() +
+  labs(title = "Frequency of Player Card 1",
+       x = "Player Card 1",
+       y = "Frequency") +
+  scale_x_discrete(limit = 1:11, breaks = 1:11)
+```
+
+```{r, warning = FALSE}
+summary(dat1$dealcard1)
+
+ggplot(dat1, aes(dealcard1)) +
+  geom_bar() +
+  labs(title = "Frequency of Dealer Card 1",
+       x = "Dealer Card 1",
+       y = "Frequency") +
+  scale_x_discrete(limit = 1:11, breaks = 1:11)
+```
+
+```{r, warning = FALSE}
+summary(dat1$sumofdeal)
+
+ggplot(dat1, aes(sumofdeal)) +
+  geom_bar() +
+  labs(title = "Frequency of Dealer Card Sum",
+       x = "Dealer Card Sum",
+       y = "Frequency") +
+  scale_x_discrete(limits = 8:26, breaks = 8:26)
+```
 
 ```{r}
+summary(dat1$sumofcards)
 
-# percent chance of win
+ggplot(dat1, aes(sumofcards)) +
+  geom_bar() +
+  labs(title = "Frequency of Player Card Sum",
+       x = "Player Card Sum",
+       y = "Frequency") +
+  scale_x_discrete(limits = 8:26, breaks = 8:26)
+```
+
+```{r}
+summary(dat1$plwinamt)
+```
+
+```{r}
+summary(dat1$dlwinamt)
+```
+  In a blackjack game, like the one being analyzed, each player receives two cards. Possible values range from 1-11 for each card, and 2-21 for the total hand value. The dealer is also dealt two cards, however one is face down. This forces the player to make a decision based on limited information. The player must choose to hit or stand.* All while playing against the dealer who has a hidden card. Another catch is that the dealer must stand on any 17. The object of the game is to beat the dealer by gaining a hand valued higher than theirs without exceeding 21. Above, I have calculated the summary statistics for important values. The values included will be the basis for my analysis. The trade secrets of blackjack known by players as "The Book" hides in the numbers shown above.
+  
+*Other options that I won't dive into for purposes of this analysis: double down, split.
+
+# Data Analysis
+
+## Question 1
+  Expected value is a very useful tool for determining the underlying value in a game or market. Blackjack is no different. To calculate expected value multiply the monetary win/loss by the chance that thing happens. Then add up all the individual values to determine your expected value for the game. Below I have calculated the expected value of this blackjack data. 
+```{r}
+# percent chance dealer bust
+# percent chance of plwin
 windat <- dat1 %>%
   filter(plwinamt == 20) %>%
   summarise(win_count = n()) 
@@ -54,8 +118,12 @@ totl_dat <- dat1 %>%
 
 win_pct <- max(windat$win_count) / max(totl_dat$totl_count)
 win_pct
+```
 
-# percent chance of push
+Above is the chance a player wins, without getting a blackjack. 
+
+```{r}
+# percent chance of plpush
 pushdat <- dat1 %>%
   filter(plwinamt == 10) %>%
   summarise(push_count = n()) 
@@ -65,8 +133,12 @@ totl_dat <- dat1 %>%
 
 push_pct <- max(pushdat$push_count) / max(totl_dat$totl_count)
 push_pct
+```
 
-# percent chance of loss
+The percent chance of a push is shown above. 
+
+```{r}
+# percent chance of plloss
 lossdat <- dat1 %>%
   filter(plwinamt == 0) %>%
   summarise(loss_count = n()) 
@@ -76,24 +148,45 @@ totl_dat <- dat1 %>%
 
 loss_pct <- max(lossdat$loss_count) / max(totl_dat$totl_count)
 loss_pct
+```
 
-# pct of blackjack chance in win 
+The percent chance of a loss is shown above.
+
+```{r}
+# pct chance of blackjack if win 
 blkjckdat <- dat1 %>%
   filter(plwinamt == 25) %>%
   summarise(blkjck_count = n()) 
 
 blkjck_true_pct <- max(blkjckdat$blkjck_count) / max(totl_dat$totl_count)
 blkjck_true_pct
+```
 
+The chance a player wins, while also receiving a blackjack.
+
+```{r}
 # calculate expected value
 ex1 <- 15 * blkjck_true_pct
 ex2 <- 10 * win_pct
 ex3 <- -10 * loss_pct
 ex4 <- 0 * push_pct
 
-EV <- ex1 + ex2 +ex3 + ex
+EV <- ex1 + ex2 +ex3 + ex4
 EV
 ```
+
+By combining the probabilities listed, I calculated the true expected value of this blackjack game. The output represents what a player stands to lose on each hand on average. This is assuming the player bets $10 each time and blackjacks are payed out 3:2. 
+
+If we exclude the probability of a push the house edge can be easily calculated. 
+
+```{r}
+true_win_pct <- blkjck_true_pct + win_pct 
+house_edge_pct <- loss_pct - true_win_pct 
+house_edge_pct
+```
+This chunk calculates the house edge to be just under 5 percent. Which leads perfectly into my next question. 
+
+## Question 2
 
 ```{r}
 # first vis
@@ -112,14 +205,15 @@ glimpse(plhand_win)
 
 plwin_pct <- plhand_count %>%
   left_join(plhand_win) %>%
-  summarise(percent_win = win_count / count)
+  summarise(percent_win = win_count / count, .groups = "keep")
 
-plot1 <- ggplot(plwin_pct, aes(ply2cardsum, percent_win)) +
-  geom_bar(stat = "identity")
+plot1 <- ggplot(plwin_pct, aes(ply2cardsum, percent_win * 100)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Chance of Win vs. 2 Card Sum", 
+       x = "Player 2 Card Sum",
+       y = "Player Win Percentage") +
+  scale_x_discrete(limits = (2:21), breaks = 1:21)
 plot1
-
-# facet by dealer card?
-
 ```
 
 
@@ -132,7 +226,7 @@ glimpse(dlhand_count)
   
 dlhand_win <- dat1 %>%
   group_by(dealcard2) %>%
-  filter(dlwinamt %in% x2) %>%
+  filter(dlwinamt == 10) %>%
   summarise(win_count = n(), .groups = "keep")
 glimpse(dlhand_win)
 
@@ -153,7 +247,6 @@ ggplot(dat1, aes(dealcard1, ))
 # third vis 
 # ply2cardsum y is percent plybustbeat
 
-# plot straight win push loss percentages 
 ```
 
 ```{r}
@@ -164,4 +257,6 @@ ggplot(dat1, aes(dealcard1, ))
 
 # combine the two, show chart of all possibilities 
 # ply2card sum (or possible hands) == rows and dealcard1 == col
+
+
 ```

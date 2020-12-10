@@ -14,16 +14,18 @@ tags: []
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
 <p>Nearly all sports have one thing in common; a final score. It’s the most important number, and some say it’s the only one that matters. In spite of that view, many sports have been flipped on their head by a proper understanding of key numbers. My mind automatically drifts to the story told in Micheal Lewis’ <em>“Moneyball”</em>. In which, the MLB was revolutionized by the analytical ideas of a few baseball black sheep. Like many other leagues, the NBA was not immune to this revolution. Economics and statistics have transformed the league. With a focus on reaching maximum point scoring efficiency. The comprehensive story is beautifully told in Kirk Goldsberry’s book <em>“Sprawlball”</em>. The novel shows how quantitative analysis pushed all NBA teams to dramatically change their strategy. My analysis will ultimately determine if better “Sprawlball” execution results in more games won. This will be achieved through exploration of key questions.</p>
-<div id="key-questions" class="section level2">
-<h2>Key Questions</h2>
+<div id="key-questions" class="section level3">
+<h3>Key Questions</h3>
 <ol style="list-style-type: decimal">
 <li>What is “Sprawlball”?</li>
 <li>What led NBA teams to adopt this new strategy?</li>
 <li>How can proper strategy execution be quantified?</li>
 </ol>
 <p>To examine this topic I collected advanced shot data directly form the NBA Stats website. I made use of a python web-scraper that included the requests and json modules. A tutorial was used to help build the web-scraper. (If you’d like to try for yourself the link is posted below.) The data includes every shot taken during the 2009-2010 and the 2018-2019 NBA Regular Seasons. It includes an impressive amount of variables that describe everything you could need.</p>
-<p><a href="https://stats.nba.com/stats/shotchartdetail" class="uri">https://stats.nba.com/stats/shotchartdetail</a>
-# Exploratory Data Analysis</p>
+</div>
+</div>
+<div id="exploratory-data-analysis" class="section level1">
+<h1>Exploratory Data Analysis</h1>
 <pre class="r"><code>glimpse(shots10)</code></pre>
 <pre><code>## Observations: 200,966
 ## Variables: 24
@@ -98,26 +100,7 @@ shots10_pct &lt;- shots10_2pt %&gt;%
 
 # 2019 shots
 shots19_pct &lt;- shots19_2pt %&gt;%
-  full_join(shots19_3pt, by = &quot;SHOT_DISTANCE&quot;)
-
-glimpse(shots19_pct)</code></pre>
-<pre><code>## Observations: 84
-## Variables: 5
-## Groups: SHOT_DISTANCE [84]
-## $ SHOT_DISTANCE                 &lt;dbl&gt; 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 1…
-## $ shot_percentage_by_distance.x &lt;dbl&gt; 0.7380197, 0.6838907, 0.5229454, 0.4118…
-## $ points_per_shot.x             &lt;dbl&gt; 1.4760393, 1.3677814, 1.0458909, 0.8237…
-## $ shot_percentage_by_distance.y &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-## $ points_per_shot.y             &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</code></pre>
-<pre class="r"><code>glimpse(shots10_pct)</code></pre>
-<pre><code>## Observations: 85
-## Variables: 5
-## Groups: SHOT_DISTANCE [85]
-## $ SHOT_DISTANCE                 &lt;dbl&gt; 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 1…
-## $ shot_percentage_by_distance.x &lt;dbl&gt; 0.6155976, 0.6516295, 0.5207916, 0.4065…
-## $ points_per_shot.x             &lt;dbl&gt; 1.2311952, 1.3032590, 1.0415832, 0.8131…
-## $ shot_percentage_by_distance.y &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-## $ points_per_shot.y             &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</code></pre>
+  full_join(shots19_3pt, by = &quot;SHOT_DISTANCE&quot;)</code></pre>
 <p>After examining the dataset, lets draw out some information and plot it over SHOT_DISTANCE by season. The code chunk above’s purpose is to efficiently store new variables that I created. These variables are shot percentage by distance, and points per shot by distance. Both of these values are critical in explaining how <em>“Sprawlball”</em> works and why it is so effective.</p>
 <pre class="r"><code># 2010 EDA1
 #NOTES 
@@ -163,10 +146,6 @@ plot2 &lt;- ggplot(shots10_pct,
 
 plot1 / plot2</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-</div>
-</div>
-<div id="eda-1" class="section level1">
-<h1>2019 EDA 1</h1>
 <pre class="r"><code>N1 &lt;- (0:22)
 N2 &lt;- c(30, 50, 70)
 
@@ -321,7 +300,8 @@ plot6 &lt;- ggplot(shots19_zone, aes(LOC_X, LOC_Y)) +
   labs(title = &quot;All Shots Taken Outside of the Paint&quot;, subtitle = &quot;2018-2019 NBA Season&quot;, x = &quot;&quot;, y = &quot;&quot;)
 
 plot6 </code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" width="672" />
+These two plots are easily my favorite. The way the transition is so clearly portrayed excites me.</p>
 <pre class="r"><code># shots10_pct 
 #NOTES
   #Add Legend 
@@ -346,7 +326,7 @@ plot7 &lt;- ggplot(shots10_pct, aes(x = SHOT_DISTANCE)) +
 plot8 &lt;- ggplot(shots19_pct, aes(x = SHOT_DISTANCE)) +
   geom_line(aes(y = points_per_shot.x), color = &quot;skyblue1&quot;) +
   geom_line(aes(y = points_per_shot.y), color = &quot;deepskyblue1&quot;) +
-  labs(title = &quot;Relative Value of Field Goals&quot;,
+  labs(title = &quot;&quot;,
        subtitle = &quot;2018-19 Regular Season&quot;,
        x = &quot;Shot Distance (ft)&quot;,
        y = &quot;Points Per Shot&quot;) +
@@ -357,10 +337,6 @@ plot8 &lt;- ggplot(shots19_pct, aes(x = SHOT_DISTANCE)) +
   ylim(0.0, 1.5)
 
 plot7 + plot8</code></pre>
-<pre><code>## Warning: Removed 62 row(s) containing missing values (geom_path).</code></pre>
-<pre><code>## Warning: Removed 72 row(s) containing missing values (geom_path).</code></pre>
-<pre><code>## Warning: Removed 61 row(s) containing missing values (geom_path).</code></pre>
-<pre><code>## Warning: Removed 70 row(s) containing missing values (geom_path).</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <pre class="r"><code># percentage of shots by area 
 
