@@ -13,45 +13,17 @@ tags: []
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-</div>
-<div id="eda" class="section level1">
-<h1>EDA</h1>
-<pre class="r"><code>shots10 &lt;- read_csv(&quot;data/nba_shots_2010.csv&quot;)</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   .default = col_character(),
-##   GAME_EVENT_ID = col_double(),
-##   PLAYER_ID = col_double(),
-##   TEAM_ID = col_double(),
-##   PERIOD = col_double(),
-##   MINUTES_REMAINING = col_double(),
-##   SECONDS_REMAINING = col_double(),
-##   SHOT_DISTANCE = col_double(),
-##   LOC_X = col_double(),
-##   LOC_Y = col_double(),
-##   SHOT_ATTEMPTED_FLAG = col_double(),
-##   SHOT_MADE_FLAG = col_double(),
-##   GAME_DATE = col_double()
-## )</code></pre>
-<pre><code>## See spec(...) for full column specifications.</code></pre>
-<pre class="r"><code>shots19 &lt;- read_csv(&quot;data/nba_shots_2019.csv&quot;)</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   .default = col_character(),
-##   GAME_EVENT_ID = col_double(),
-##   PLAYER_ID = col_double(),
-##   TEAM_ID = col_double(),
-##   PERIOD = col_double(),
-##   MINUTES_REMAINING = col_double(),
-##   SECONDS_REMAINING = col_double(),
-##   SHOT_DISTANCE = col_double(),
-##   LOC_X = col_double(),
-##   LOC_Y = col_double(),
-##   SHOT_ATTEMPTED_FLAG = col_double(),
-##   SHOT_MADE_FLAG = col_double(),
-##   GAME_DATE = col_double()
-## )
-## See spec(...) for full column specifications.</code></pre>
+<p>Nearly all sports have one thing in common; a final score. It’s the most important number, and some say it’s the only one that matters. In spite of that view, many sports have been flipped on their head by a proper understanding of key numbers. My mind automatically drifts to the story told in Micheal Lewis’ <em>“Moneyball”</em>. In which, the MLB was revolutionized by the analytical ideas of a few baseball black sheep. Like many other leagues, the NBA was not immune to this revolution. Economics and statistics have transformed the league. With a focus on reaching maximum point scoring efficiency. The comprehensive story is beautifully told in Kirk Goldsberry’s book <em>“Sprawlball”</em>. The novel shows how quantitative analysis pushed all NBA teams to dramatically change their strategy. My analysis will ultimately determine if better “Sprawlball” execution results in more games won. This will be achieved through exploration of key questions.</p>
+<div id="key-questions" class="section level2">
+<h2>Key Questions</h2>
+<ol style="list-style-type: decimal">
+<li>What is “Sprawlball”?</li>
+<li>What led NBA teams to adopt this new strategy?</li>
+<li>How can proper strategy execution be quantified?</li>
+</ol>
+<p>To examine this topic I collected advanced shot data directly form the NBA Stats website. I made use of a python web-scraper that included the requests and json modules. A tutorial was used to help build the web-scraper. (If you’d like to try for yourself the link is posted below.) The data includes every shot taken during the 2009-2010 and the 2018-2019 NBA Regular Seasons. It includes an impressive amount of variables that describe everything you could need.</p>
+<p><a href="https://stats.nba.com/stats/shotchartdetail" class="uri">https://stats.nba.com/stats/shotchartdetail</a>
+# Exploratory Data Analysis</p>
 <pre class="r"><code>glimpse(shots10)</code></pre>
 <pre><code>## Observations: 200,966
 ## Variables: 24
@@ -79,10 +51,7 @@ tags: []
 ## $ GAME_DATE           &lt;dbl&gt; 20091027, 20091027, 20091027, 20091027, 20091027,…
 ## $ HTM                 &lt;chr&gt; &quot;CLE&quot;, &quot;CLE&quot;, &quot;CLE&quot;, &quot;CLE&quot;, &quot;CLE&quot;, &quot;CLE&quot;, &quot;CLE&quot;, …
 ## $ VTM                 &lt;chr&gt; &quot;BOS&quot;, &quot;BOS&quot;, &quot;BOS&quot;, &quot;BOS&quot;, &quot;BOS&quot;, &quot;BOS&quot;, &quot;BOS&quot;, …</code></pre>
-<ul>
-<li>create shot pct vs dist table</li>
-<li>compare percentage of shots taken by area</li>
-</ul>
+<p>My datasets for this analysis contain over 400,000 individual shots taken in the National Basketball Association during the 2009-2010, and 2018-2019 Regular Seasons. The data is stored in the nba_shots_2010.csv and the nba_shots_2019.csv. The 2010 data consists of 200,966 observations of 24 variables. The 2019 data consists of 219,458 observations and 24 variables. The variables in each dataset are the same. GRID_TYPE is negligible, it is a class character with one unique value. GAME_ID, GAME_EVENT_ID, PLAYER_ID, and TEAM_ID are all either characters or numerics with the purpose of identifying some individual or event. PLAYER_NAME and TEAM_NAME are more useful versions of the ID variables, being stored as human readable characters. PERIOD identifies the current period when a given shot was taken, it is stored as a numeric. MINUTES_REMAINING and SECONDS_REMAINING, in conjunction, tell the amount of time remaining when the shot was taken and are stored as numerics. EVENT_TYPE tells whether the shot was a Missed Shot or a Made Shot and is stored as a character string. ACTION_TYPE describes the type of shot being taken, there are 45 different types of shots stored in the data, and they are stored as characters. Wow! SHOT_TYPE characters tell us whether a shot was a 3PT Field Goal, or a 2PT Field Goal. SHOT_ZONE_BASIC, SHOT_ZONE_AREA, and SHOT_ZONE_DISTANCE quantify where the shot was taken in 7, 6, and 5 zones respectively. These variables are stored as character strings. LOC_X and LOC_Y are powerful variables that plot a shot’s location on a coordinate plane. They are numeric, as are SHOT_ATTEMPTED_FLAG, and SHOT_MADE_FLAG which are binary numerics and indicate the same information as other statistics. GAME_DATE is stored as a numeric and gives the game date without punctuation. HTM, and VTM give information about the respective home and away teams.</p>
 <pre class="r"><code>shots10_2pt &lt;- shots10 %&gt;%
   select(SHOT_DISTANCE, SHOT_TYPE, SHOT_MADE_FLAG, SHOT_ATTEMPTED_FLAG) %&gt;%
   filter(SHOT_TYPE == &quot;2PT Field Goal&quot;) %&gt;%
@@ -129,13 +98,33 @@ shots10_pct &lt;- shots10_2pt %&gt;%
 
 # 2019 shots
 shots19_pct &lt;- shots19_2pt %&gt;%
-  full_join(shots19_3pt, by = &quot;SHOT_DISTANCE&quot;)</code></pre>
+  full_join(shots19_3pt, by = &quot;SHOT_DISTANCE&quot;)
+
+glimpse(shots19_pct)</code></pre>
+<pre><code>## Observations: 84
+## Variables: 5
+## Groups: SHOT_DISTANCE [84]
+## $ SHOT_DISTANCE                 &lt;dbl&gt; 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 1…
+## $ shot_percentage_by_distance.x &lt;dbl&gt; 0.7380197, 0.6838907, 0.5229454, 0.4118…
+## $ points_per_shot.x             &lt;dbl&gt; 1.4760393, 1.3677814, 1.0458909, 0.8237…
+## $ shot_percentage_by_distance.y &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ points_per_shot.y             &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</code></pre>
+<pre class="r"><code>glimpse(shots10_pct)</code></pre>
+<pre><code>## Observations: 85
+## Variables: 5
+## Groups: SHOT_DISTANCE [85]
+## $ SHOT_DISTANCE                 &lt;dbl&gt; 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 1…
+## $ shot_percentage_by_distance.x &lt;dbl&gt; 0.6155976, 0.6516295, 0.5207916, 0.4065…
+## $ points_per_shot.x             &lt;dbl&gt; 1.2311952, 1.3032590, 1.0415832, 0.8131…
+## $ shot_percentage_by_distance.y &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ points_per_shot.y             &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</code></pre>
+<p>After examining the dataset, lets draw out some information and plot it over SHOT_DISTANCE by season. The code chunk above’s purpose is to efficiently store new variables that I created. These variables are shot percentage by distance, and points per shot by distance. Both of these values are critical in explaining how <em>“Sprawlball”</em> works and why it is so effective.</p>
 <pre class="r"><code># 2010 EDA1
 #NOTES 
  #invvestigate labels
  #combine charts?
 N1 &lt;- (0:23)
-N2 &lt;- c(30, 50, 70)
+N2 &lt;- c(10, 30, 50, 70)
 
 plot1 &lt;- ggplot(shots10_pct,
                 aes(x = SHOT_DISTANCE,
@@ -173,17 +162,12 @@ plot2 &lt;- ggplot(shots10_pct,
   theme(legend.title = element_blank())
 
 plot1 / plot2</code></pre>
-<pre><code>## Warning: Removed 62 rows containing missing values (position_stack).</code></pre>
-<pre><code>## Warning: Removed 2 rows containing missing values (geom_bar).</code></pre>
-<pre><code>## Warning: Removed 70 rows containing missing values (position_stack).</code></pre>
-<pre><code>## Warning: Removed 1 rows containing missing values (geom_bar).</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<pre class="r"><code>#2019 EDA1
-#NOTES 
-  #possibly combine charts 
-  #investigate labels
- 
-N1 &lt;- (0:22)
+</div>
+</div>
+<div id="eda-1" class="section level1">
+<h1>2019 EDA 1</h1>
+<pre class="r"><code>N1 &lt;- (0:22)
 N2 &lt;- c(30, 50, 70)
 
 plot1 &lt;- ggplot(shots19_pct,
@@ -222,28 +206,9 @@ plot2 &lt;- ggplot(shots19_pct,
   theme(legend.title = element_blank())
 
 plot1 / plot2</code></pre>
-<pre><code>## Warning: Removed 61 rows containing missing values (position_stack).</code></pre>
-<pre><code>## Warning: Removed 2 rows containing missing values (geom_bar).</code></pre>
-<pre><code>## Warning: Removed 68 rows containing missing values (position_stack).</code></pre>
-<pre><code>## Warning: Removed 2 rows containing missing values (geom_bar).</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" width="672" />
-### Possible New Chart Configuration</p>
-<pre class="r"><code>plot26 &lt;- ggplot(shots19_pct,
-                aes(x = SHOT_DISTANCE,
-                fill = shot_percentage_by_distance.y)) +
-  geom_bar(aes(y = shot_percentage_by_distance.y * 100), stat = &quot;identity&quot;) +
-  geom_bar(aes(y = shot_percentage_by_distance.x * 100), stat = &quot;identity&quot;)
-  labs(title = &quot;3PT Field Goals&quot;,
-       subtitle = &quot;2018-19 Regular Season&quot;) +
-  scale_x_continuous(name = &quot;Shot Distance (ft)&quot;,
-                     breaks = N3,
-                     limits = c(0, 36)) +
-  scale_y_continuous(name = &quot;Shooting Percentage&quot;,
-                     breaks = N4,
-                     limits = c(0, 80)) +
-  scale_fill_binned(low = &quot;skyblue1&quot;, high = &quot;firebrick&quot;) +
-  theme(legend.title = element_blank())</code></pre>
-<pre><code>## NULL</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>These plots are meant to look at the problem from a very basic level. However, already we see relationships forming in the data. Those with a keen eye will notice that there is not a significant decrease in shot percentage from once you cross the 3pt line at roughly 22ft. Players are generally consistent when shooting from about 3-25 ft. This fact will give rise to extremely important information in the data analysis section.</p>
+<p>Speaking of, shot distance was an interesting challenge that I faced.</p>
 <pre class="r"><code># percentage of shots by area 
 N5 &lt;- length(shots10$SHOT_ATTEMPTED_FLAG)
 N6 &lt;- length(shots19$SHOT_ATTEMPTED_FLAG)
@@ -290,25 +255,52 @@ pt19 &lt;- shot_counter(shots19, &quot;In The Paint (Non-RA)&quot;, N6)</code></
 <pre><code>## [1] 0.002123413</code></pre>
 <pre class="r"><code># df for 2010 plot
 pie_dat10 &lt;- data.frame(
-  shot_zone = c(&quot;In The Paint (Non-RA)&quot;, &quot;Restricted Area&quot;, &quot;Mid-Range&quot;, &quot;Left Corner 3&quot;, &quot;Above the Break 3&quot;, &quot;Right Corner 3&quot;, &quot;Backcourt&quot;),
+  shot_zone = c(&quot;In The Paint (Non-RA)&quot;,
+                &quot;Restricted Area&quot;,
+                &quot;Mid-Range&quot;,
+                &quot;Left Corner 3&quot;,
+                &quot;Above the Break 3&quot;,
+                &quot;Right Corner 3&quot;,
+                &quot;Backcourt&quot;),
   percent = c(pt10, ra10, mr10, lc10, ab10, rc10, bc10)
 )
 
 # df for 2019 plot
 pie_dat19 &lt;- data.frame(
-  shot_zone = c(&quot;In The Paint (Non-RA)&quot;, &quot;Restricted Area&quot;, &quot;Mid-Range&quot;, &quot;Left Corner 3&quot;, &quot;Above the Break 3&quot;, &quot;Right Corner 3&quot;, &quot;Backcourt&quot;),
+  shot_zone = c(&quot;In The Paint (Non-RA)&quot;,
+                &quot;Restricted Area&quot;,
+                &quot;Mid-Range&quot;,
+                &quot;Left Corner 3&quot;,
+                &quot;Above the Break 3&quot;,
+                &quot;Right Corner 3&quot;,
+                &quot;Backcourt&quot;),
   percent = c(pt19, ra19, mr19, lc19, ab19, rc19, bc19)
 )</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre class="r"><code>#NOTES
+  # legend title!!!!
+plot3 &lt;- ggplot(pie_dat10, aes(x=&quot;&quot;, y = percent, fill = shot_zone)) +
+  geom_bar(stat = &quot;identity&quot;, width = 3, color = &quot;white&quot;) +
+  coord_polar(&quot;y&quot;, start=0) +
+  theme_void() + 
+  labs(title = &quot;Shot Distribution By Zone&quot;, subtitle = &quot;2009-10 Regular Season&quot;) +
+  theme(legend.title = element_text(&quot;Shot Zone&quot;)) +
+  scale_fill_brewer(palette=&quot;Pastel1&quot;)
+  
+plot4 &lt;- ggplot(pie_dat19, aes(x=&quot;&quot;, y = percent, fill = shot_zone)) +
+  geom_bar(stat = &quot;identity&quot;, width = 3, color = &quot;white&quot;) +
+  coord_polar(&quot;y&quot;, start=0) +
+  theme_void() + 
+  labs(title = &quot;Shot Distribution By Zone&quot;, subtitle = &quot;2018-19 Regular Season&quot;) +
+  theme(legend.title = element_text(&quot;Shot Zone&quot;)) +
+  scale_fill_brewer(palette=&quot;Pastel1&quot;)
+
+plot3 + plot4</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+Here you can see how frequently players shoot in certain zones relative to one another. The drastic change seen in this graph is yet another fundamental component of <em>“Sprawlball”</em>, that connects right back to the first set of plots. As mentioned, the shooting percentage does not decrease by a significant amount (hypoth test) per ft once you go outside of the restricted area. This explains the contraction in the “Mid-Range” and the near doubling of the “Above the Break 3”. Why do more for less? Is probably a question players have asked themselves. Stepping back to launch an open 3 has become the most profitable play in basketball. In the next section I’ll get specific on what exactly this strategy is and why it is so popular today.</p>
 </div>
 <div id="data-analysis" class="section level1">
 <h1>Data Analysis</h1>
-<pre class="r"><code># 2010 Shot Dist
-#NOTES 
-  # Add photo?
-
-zones &lt;- c(&quot;Mid-Range&quot;, &quot;Right Corner 3&quot;, &quot;Left Corner 3&quot;, &quot;Above the Break 3&quot;, &quot;Backcourt&quot;)
-mypng &lt;- readPNG(&quot;/home/jdkincan/1001-proj-final/nba_court_1.png&quot;)
+<pre class="r"><code>zones &lt;- c(&quot;Mid-Range&quot;, &quot;Right Corner 3&quot;, &quot;Left Corner 3&quot;, &quot;Above the Break 3&quot;, &quot;Backcourt&quot;)
 
 shots10_zone &lt;- shots10 %&gt;%
   filter(SHOT_ZONE_BASIC %in% zones) 
@@ -317,12 +309,9 @@ plot5 &lt;- ggplot(shots10_zone, aes(LOC_X, LOC_Y)) +
   geom_hex(binwidth = 20, na.rm = FALSE) +
   scale_fill_gradient(low=&quot;skyblue1&quot;, high=&quot;firebrick&quot;) +
   labs(title = &quot;All Shots Taken Outside of the Paint&quot;, subtitle = &quot;2009-2010 NBA Season&quot;, x = &quot;&quot;, y = &quot;&quot;, legend = &quot;Frequency&quot;) 
+
 plot5</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
-<pre class="r"><code>#theme_void()
-#ggdraw() +
-  #draw_image(mypng) +
-  #draw_plot(plot5/6)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <pre class="r"><code>shots19_zone &lt;- shots19 %&gt;%
   filter(SHOT_ZONE_BASIC %in% zones)
 
@@ -330,8 +319,9 @@ plot6 &lt;- ggplot(shots19_zone, aes(LOC_X, LOC_Y)) +
   geom_hex(binwidth = 20, na.rm = FALSE) +
   scale_fill_gradient(low=&quot;skyblue1&quot;, high=&quot;firebrick&quot;) +
   labs(title = &quot;All Shots Taken Outside of the Paint&quot;, subtitle = &quot;2018-2019 NBA Season&quot;, x = &quot;&quot;, y = &quot;&quot;)
+
 plot6 </code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <pre class="r"><code># shots10_pct 
 #NOTES
   #Add Legend 
@@ -371,7 +361,7 @@ plot7 + plot8</code></pre>
 <pre><code>## Warning: Removed 72 row(s) containing missing values (geom_path).</code></pre>
 <pre><code>## Warning: Removed 61 row(s) containing missing values (geom_path).</code></pre>
 <pre><code>## Warning: Removed 70 row(s) containing missing values (geom_path).</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <pre class="r"><code># percentage of shots by area 
 
 # counts total shots in each zone by year
@@ -481,15 +471,15 @@ plot9 &lt;- ggplot(ptsperdat, aes(x = shot_zone, y = ptspershot.x, fill = ptsper
                     # breaks = N2,
                     # limits = c(0, 80)) +
   #scale_fill_binned(low=&quot;skyblue1&quot;, high=&quot;firebrick&quot;) +
-  #theme(legend.title = element_blank())
+  #theme(legen![](/2020-12-08-nba-evolution/index_files/nba-basketball-iso.png)d.title = element_blank())
 plot9</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="index_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <pre class="r"><code>plot27 &lt;- ggplot(ptsperdat,
                 aes(x = shot_zone)) +
   geom_bar(aes(y = ptspershot.y), stat = &quot;identity&quot;) +
   geom_bar(aes(y = ptspershot.x), stat = &quot;identity&quot;)
 plot27</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-13-2.png" width="672" /></p>
+<p><img src="index_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
 <pre class="r"><code>  #labs(title = &quot;Points Per Shot By Zone&quot;,
      #  subtitle = &quot;2018-19 Regular Season&quot;) +
   #scale_x_continuous(name = &quot;Shot Distance (ft)&quot;,
@@ -500,4 +490,5 @@ plot27</code></pre>
                  #    limits = c(0, 80)) +
   #scale_fill_binned(low = &quot;skyblue1&quot;, high = &quot;firebrick&quot;) +
   #theme(legend.title = element_blank())</code></pre>
+<p><a href="https://stats.nba.com/stats/shotchartdetail" class="uri">https://stats.nba.com/stats/shotchartdetail</a></p>
 </div>
