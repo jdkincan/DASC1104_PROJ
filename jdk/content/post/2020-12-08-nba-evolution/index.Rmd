@@ -37,7 +37,7 @@ To examine this topic I collected advanced shot data directly form the NBA Stats
 
 # Exploratory Data Analysis 
 
-```{r, message=FALSE, echo=FALSE}
+```{r, message=FALSE, echo=TRUE}
 shots10 <- read_csv("data/nba_shots_2010.csv")
 shots19 <- read_csv("data/nba_shots_2019.csv")
 ```
@@ -202,7 +202,7 @@ shot_counter <- function(x, y, z) {
     filter(SHOT_ZONE_BASIC == y)
   b <- length(a$SHOT_ZONE_BASIC)
   c <- b / z
-  print(c)
+  return(c)
 }
 
 # percent of shots by area 2010
@@ -249,8 +249,6 @@ pie_dat19 <- data.frame(
 ```
 
 ```{r}
-#NOTES
-  # legend title!!!!
 plot3 <- ggplot(pie_dat10, aes(x="", y = percent, fill = shot_zone)) +
   geom_bar(stat = "identity", width = 3, color = "white") +
   coord_polar("y", start=0) +
@@ -280,7 +278,7 @@ plot3 + plot4
 What is "Sprawlball"?
 
 ```{r}
-zones <- c("Mid-Range", "Right Corner 3", "Left Corner 3", "Above the Break 3", "Backcourt")
+zones <- c("Mid-Range", "Right Corner 3", "Left Corner 3", "Above the Break 3")
 
 shots10_zone <- shots10 %>%
   filter(SHOT_ZONE_BASIC %in% zones) 
@@ -290,19 +288,22 @@ plot5 <- ggplot(shots10_zone, aes(LOC_X, LOC_Y)) +
   scale_fill_gradient(low="skyblue1", high="firebrick") +
   labs(title = "All Shots Taken Outside of the Paint", subtitle = "2009-2010 NBA Season", x = "", y = "", legend = "Frequency") 
 
-plot5
-```
 
-```{r}
 shots19_zone <- shots19 %>%
   filter(SHOT_ZONE_BASIC %in% zones)
 
 plot6 <- ggplot(shots19_zone, aes(LOC_X, LOC_Y)) + 
   geom_hex(binwidth = 20, na.rm = FALSE) +
   scale_fill_gradient(low="skyblue1", high="firebrick") +
-  labs(title = "All Shots Taken Outside of the Paint", subtitle = "2018-2019 NBA Season", x = "", y = "")
+  labs(title = "", subtitle = "2018-2019 NBA Season", x = "", y = "")
 
-plot6 
+#plot5 + plot6 +
+#    plot_layout(widths = unit(c(5, 5), c("cm", "cm")), heights = unit(c(5, 5), c("cm", "cm")))
+
+layout <- '
+AB
+'
+wrap_plots(A = plot5, B = plot6, design = layout)
 ```
   That is "Sprawlball". This shooting distribution is essential to the strategy. At a basic level it attempts to spread the floor in order to take as many high value shots as possible. Here we see a clearly defined transition over just 9 years, with shots becoming more concentrated around high value areas. Without so much as a picture to help plot the 3pt line, it's there. In the 2019 data, the line appears in stark contrast with the rest of the floor. We are now realizing the full potential of what the line brings to the game. As players get better at shooting long shots the value of a 3pter continues to rise. This information is clearly displayed in the plots below, and will be further explored throughout the analysis. 
 
@@ -361,7 +362,7 @@ shot_counter1 <- function(x, y) {
     select(SHOT_ZONE_BASIC) %>%
     filter(SHOT_ZONE_BASIC == y)
   b <- length(a$SHOT_ZONE_BASIC)
-  print(b)
+  return(b)
 }
 
 # total number of shots by area 2010
@@ -390,7 +391,7 @@ made_shot_counter <- function(x, y, z, w) {
   b <- length(a$SHOT_ZONE_BASIC)
   c <- b / z
   d <- c * w
-  print(d)
+  return(d)
 }
 
 # total number of shots by area 2010

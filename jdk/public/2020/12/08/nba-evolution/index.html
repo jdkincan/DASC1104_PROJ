@@ -52,7 +52,7 @@
     
     <li><a href="resume/Jack-Kincannon.pdf">Resume</a></li>
     
-    <li><a href="https://twitter.com/rstudio">Twitter</a></li>
+    <li><a href="https://twitter.com/jackkincannon">Twitter</a></li>
     
   </ul>
 </nav>
@@ -94,6 +94,8 @@
 </div>
 <div id="exploratory-data-analysis" class="section level1">
 <h1>Exploratory Data Analysis</h1>
+<pre class="r"><code>shots10 &lt;- read_csv(&quot;data/nba_shots_2010.csv&quot;)
+shots19 &lt;- read_csv(&quot;data/nba_shots_2019.csv&quot;)</code></pre>
 <pre class="r"><code>glimpse(shots10)</code></pre>
 <pre><code>## Observations: 200,966
 ## Variables: 24
@@ -266,40 +268,28 @@ shot_counter &lt;- function(x, y, z) {
     filter(SHOT_ZONE_BASIC == y)
   b &lt;- length(a$SHOT_ZONE_BASIC)
   c &lt;- b / z
-  print(c)
+  return(c)
 }
 
 # percent of shots by area 2010
-pt10 &lt;- shot_counter(shots10, &quot;In The Paint (Non-RA)&quot;, N5)</code></pre>
-<pre><code>## [1] 0.1314949</code></pre>
-<pre class="r"><code>ra10 &lt;- shot_counter(shots10, &quot;Restricted Area&quot;, N5)</code></pre>
-<pre><code>## [1] 0.3322054</code></pre>
-<pre class="r"><code>mr10 &lt;- shot_counter(shots10, &quot;Mid-Range&quot;, N5)</code></pre>
-<pre><code>## [1] 0.3143268</code></pre>
-<pre class="r"><code>lc10 &lt;- shot_counter(shots10, &quot;Left Corner 3&quot;, N5)</code></pre>
-<pre><code>## [1] 0.03116448</code></pre>
-<pre class="r"><code>ab10 &lt;- shot_counter(shots10, &quot;Above the Break 3&quot;, N5)</code></pre>
-<pre><code>## [1] 0.1604152</code></pre>
-<pre class="r"><code>rc10 &lt;- shot_counter(shots10, &quot;Right Corner 3&quot;, N5)</code></pre>
-<pre><code>## [1] 0.02802962</code></pre>
-<pre class="r"><code>bc10 &lt;- shot_counter(shots10, &quot;Backcourt&quot;, N5)</code></pre>
-<pre><code>## [1] 0.002363584</code></pre>
-<pre class="r"><code># percent of shots by area 2019
-pt19 &lt;- shot_counter(shots19, &quot;In The Paint (Non-RA)&quot;, N6)</code></pre>
-<pre><code>## [1] 0.1600397</code></pre>
-<pre class="r"><code>ra19 &lt;- shot_counter(shots19, &quot;Restricted Area&quot;, N6)</code></pre>
-<pre><code>## [1] 0.3300267</code></pre>
-<pre class="r"><code>mr19 &lt;- shot_counter(shots19, &quot;Mid-Range&quot;, N6)</code></pre>
-<pre><code>## [1] 0.1516235</code></pre>
-<pre class="r"><code>lc19 &lt;- shot_counter(shots19, &quot;Left Corner 3&quot;, N6)</code></pre>
-<pre><code>## [1] 0.04152047</code></pre>
-<pre class="r"><code>ab19 &lt;- shot_counter(shots19, &quot;Above the Break 3&quot;, N6)</code></pre>
-<pre><code>## [1] 0.2746995</code></pre>
-<pre class="r"><code>rc19 &lt;- shot_counter(shots19, &quot;Right Corner 3&quot;, N6)</code></pre>
-<pre><code>## [1] 0.03996665</code></pre>
-<pre class="r"><code>bc19 &lt;- shot_counter(shots19, &quot;Backcourt&quot;, N6)</code></pre>
-<pre><code>## [1] 0.002123413</code></pre>
-<pre class="r"><code># df for 2010 plot
+pt10 &lt;- shot_counter(shots10, &quot;In The Paint (Non-RA)&quot;, N5)
+ra10 &lt;- shot_counter(shots10, &quot;Restricted Area&quot;, N5)
+mr10 &lt;- shot_counter(shots10, &quot;Mid-Range&quot;, N5)
+lc10 &lt;- shot_counter(shots10, &quot;Left Corner 3&quot;, N5)
+ab10 &lt;- shot_counter(shots10, &quot;Above the Break 3&quot;, N5)
+rc10 &lt;- shot_counter(shots10, &quot;Right Corner 3&quot;, N5)
+bc10 &lt;- shot_counter(shots10, &quot;Backcourt&quot;, N5)
+
+# percent of shots by area 2019
+pt19 &lt;- shot_counter(shots19, &quot;In The Paint (Non-RA)&quot;, N6)
+ra19 &lt;- shot_counter(shots19, &quot;Restricted Area&quot;, N6)
+mr19 &lt;- shot_counter(shots19, &quot;Mid-Range&quot;, N6)
+lc19 &lt;- shot_counter(shots19, &quot;Left Corner 3&quot;, N6)
+ab19 &lt;- shot_counter(shots19, &quot;Above the Break 3&quot;, N6)
+rc19 &lt;- shot_counter(shots19, &quot;Right Corner 3&quot;, N6)
+bc19 &lt;- shot_counter(shots19, &quot;Backcourt&quot;, N6)
+
+# df for 2010 plot
 pie_dat10 &lt;- data.frame(
   shot_zone = c(&quot;In The Paint (Non-RA)&quot;,
                 &quot;Restricted Area&quot;,
@@ -349,7 +339,7 @@ plot3 + plot4</code></pre>
 <div id="question-1" class="section level2">
 <h2>Question 1</h2>
 <p>What is “Sprawlball”?</p>
-<pre class="r"><code>zones &lt;- c(&quot;Mid-Range&quot;, &quot;Right Corner 3&quot;, &quot;Left Corner 3&quot;, &quot;Above the Break 3&quot;, &quot;Backcourt&quot;)
+<pre class="r"><code>zones &lt;- c(&quot;Mid-Range&quot;, &quot;Right Corner 3&quot;, &quot;Left Corner 3&quot;, &quot;Above the Break 3&quot;)
 
 shots10_zone &lt;- shots10 %&gt;%
   filter(SHOT_ZONE_BASIC %in% zones) 
@@ -359,18 +349,23 @@ plot5 &lt;- ggplot(shots10_zone, aes(LOC_X, LOC_Y)) +
   scale_fill_gradient(low=&quot;skyblue1&quot;, high=&quot;firebrick&quot;) +
   labs(title = &quot;All Shots Taken Outside of the Paint&quot;, subtitle = &quot;2009-2010 NBA Season&quot;, x = &quot;&quot;, y = &quot;&quot;, legend = &quot;Frequency&quot;) 
 
-plot5</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
-<pre class="r"><code>shots19_zone &lt;- shots19 %&gt;%
+
+shots19_zone &lt;- shots19 %&gt;%
   filter(SHOT_ZONE_BASIC %in% zones)
 
 plot6 &lt;- ggplot(shots19_zone, aes(LOC_X, LOC_Y)) + 
   geom_hex(binwidth = 20, na.rm = FALSE) +
   scale_fill_gradient(low=&quot;skyblue1&quot;, high=&quot;firebrick&quot;) +
-  labs(title = &quot;All Shots Taken Outside of the Paint&quot;, subtitle = &quot;2018-2019 NBA Season&quot;, x = &quot;&quot;, y = &quot;&quot;)
+  labs(title = &quot;&quot;, subtitle = &quot;2018-2019 NBA Season&quot;, x = &quot;&quot;, y = &quot;&quot;)
 
-plot6 </code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" width="672" />
+#plot5 + plot6 +
+#    plot_layout(widths = unit(c(5, 5), c(&quot;cm&quot;, &quot;cm&quot;)), heights = unit(c(5, 5), c(&quot;cm&quot;, &quot;cm&quot;)))
+
+layout &lt;- &#39;
+AB
+&#39;
+wrap_plots(A = plot5, B = plot6, design = layout)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" width="672" />
 That is “Sprawlball”. This shooting distribution is essential to the strategy. At a basic level it attempts to spread the floor in order to take as many high value shots as possible. Here we see a clearly defined transition over just 9 years, with shots becoming more concentrated around high value areas. Without so much as a picture to help plot the 3pt line, it’s there. In the 2019 data, the line appears in stark contrast with the rest of the floor. We are now realizing the full potential of what the line brings to the game. As players get better at shooting long shots the value of a 3pter continues to rise. This information is clearly displayed in the plots below, and will be further explored throughout the analysis.</p>
 </div>
 <div id="question-2" class="section level2">
@@ -411,7 +406,7 @@ plot8 &lt;- ggplot(shots19_pct, aes(x = SHOT_DISTANCE)) +
   ylim(0.0, 1.5)
 
 plot7 + plot8</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" width="672" />
+<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" width="672" />
 This graph makes the strategy extremely clear. 3 pointers and layups are the only things worth over 1 point per shot, by a lot.</p>
 <pre class="r"><code>#HIDE OUTPUT
 
@@ -423,40 +418,28 @@ shot_counter1 &lt;- function(x, y) {
     select(SHOT_ZONE_BASIC) %&gt;%
     filter(SHOT_ZONE_BASIC == y)
   b &lt;- length(a$SHOT_ZONE_BASIC)
-  print(b)
+  return(b)
 }
 
 # total number of shots by area 2010
-pt10_ct &lt;- shot_counter1(shots10, &quot;In The Paint (Non-RA)&quot;)</code></pre>
-<pre><code>## [1] 26426</code></pre>
-<pre class="r"><code>ra10_ct &lt;- shot_counter1(shots10, &quot;Restricted Area&quot;)</code></pre>
-<pre><code>## [1] 66762</code></pre>
-<pre class="r"><code>mr10_ct &lt;- shot_counter1(shots10, &quot;Mid-Range&quot;)</code></pre>
-<pre><code>## [1] 63169</code></pre>
-<pre class="r"><code>lc10_ct &lt;- shot_counter1(shots10, &quot;Left Corner 3&quot;)</code></pre>
-<pre><code>## [1] 6263</code></pre>
-<pre class="r"><code>ab10_ct &lt;- shot_counter1(shots10, &quot;Above the Break 3&quot;)</code></pre>
-<pre><code>## [1] 32238</code></pre>
-<pre class="r"><code>rc10_ct &lt;- shot_counter1(shots10, &quot;Right Corner 3&quot;)</code></pre>
-<pre><code>## [1] 5633</code></pre>
-<pre class="r"><code>bc10_ct &lt;- shot_counter1(shots10, &quot;Backcourt&quot;)</code></pre>
-<pre><code>## [1] 475</code></pre>
-<pre class="r"><code># total number of shots by area 2019
-pt19_ct &lt;- shot_counter1(shots19, &quot;In The Paint (Non-RA)&quot;)</code></pre>
-<pre><code>## [1] 35122</code></pre>
-<pre class="r"><code>ra19_ct &lt;- shot_counter1(shots19, &quot;Restricted Area&quot;)</code></pre>
-<pre><code>## [1] 72427</code></pre>
-<pre class="r"><code>mr19_ct &lt;- shot_counter1(shots19, &quot;Mid-Range&quot;)</code></pre>
-<pre><code>## [1] 33275</code></pre>
-<pre class="r"><code>lc19_ct &lt;- shot_counter1(shots19, &quot;Left Corner 3&quot;)</code></pre>
-<pre><code>## [1] 9112</code></pre>
-<pre class="r"><code>ab19_ct &lt;- shot_counter1(shots19, &quot;Above the Break 3&quot;)</code></pre>
-<pre><code>## [1] 60285</code></pre>
-<pre class="r"><code>rc19_ct &lt;- shot_counter1(shots19, &quot;Right Corner 3&quot;)</code></pre>
-<pre><code>## [1] 8771</code></pre>
-<pre class="r"><code>bc19_ct &lt;- shot_counter1(shots19, &quot;Backcourt&quot;)</code></pre>
-<pre><code>## [1] 466</code></pre>
-<pre class="r"><code># function to calculate points per shot by zone by year
+pt10_ct &lt;- shot_counter1(shots10, &quot;In The Paint (Non-RA)&quot;)
+ra10_ct &lt;- shot_counter1(shots10, &quot;Restricted Area&quot;)
+mr10_ct &lt;- shot_counter1(shots10, &quot;Mid-Range&quot;)
+lc10_ct &lt;- shot_counter1(shots10, &quot;Left Corner 3&quot;)
+ab10_ct &lt;- shot_counter1(shots10, &quot;Above the Break 3&quot;)
+rc10_ct &lt;- shot_counter1(shots10, &quot;Right Corner 3&quot;)
+bc10_ct &lt;- shot_counter1(shots10, &quot;Backcourt&quot;)
+
+# total number of shots by area 2019
+pt19_ct &lt;- shot_counter1(shots19, &quot;In The Paint (Non-RA)&quot;)
+ra19_ct &lt;- shot_counter1(shots19, &quot;Restricted Area&quot;)
+mr19_ct &lt;- shot_counter1(shots19, &quot;Mid-Range&quot;)
+lc19_ct &lt;- shot_counter1(shots19, &quot;Left Corner 3&quot;)
+ab19_ct &lt;- shot_counter1(shots19, &quot;Above the Break 3&quot;)
+rc19_ct &lt;- shot_counter1(shots19, &quot;Right Corner 3&quot;)
+bc19_ct &lt;- shot_counter1(shots19, &quot;Backcourt&quot;)
+
+# function to calculate points per shot by zone by year
 made_shot_counter &lt;- function(x, y, z, w) {
   a &lt;- x %&gt;%
     select(SHOT_ZONE_BASIC, SHOT_MADE_FLAG) %&gt;%
@@ -464,40 +447,28 @@ made_shot_counter &lt;- function(x, y, z, w) {
   b &lt;- length(a$SHOT_ZONE_BASIC)
   c &lt;- b / z
   d &lt;- c * w
-  print(d)
+  return(d)
 }
 
 # total number of shots by area 2010
-pt10_pct &lt;- made_shot_counter(shots10, &quot;In The Paint (Non-RA)&quot;, pt10_ct, 2)</code></pre>
-<pre><code>## [1] 0.8461364</code></pre>
-<pre class="r"><code>ra10_pct &lt;- made_shot_counter(shots10, &quot;Restricted Area&quot;, ra10_ct, 2)</code></pre>
-<pre><code>## [1] 1.211767</code></pre>
-<pre class="r"><code>mr10_pct &lt;- made_shot_counter(shots10, &quot;Mid-Range&quot;, mr10_ct, 2)</code></pre>
-<pre><code>## [1] 0.8002976</code></pre>
-<pre class="r"><code>lc10_pct &lt;- made_shot_counter(shots10, &quot;Left Corner 3&quot;, lc10_ct, 3)</code></pre>
-<pre><code>## [1] 1.174517</code></pre>
-<pre class="r"><code>ab10_pct &lt;- made_shot_counter(shots10, &quot;Above the Break 3&quot;, ab10_ct, 3)</code></pre>
-<pre><code>## [1] 1.03713</code></pre>
-<pre class="r"><code>rc10_pct &lt;- made_shot_counter(shots10, &quot;Right Corner 3&quot;, rc10_ct, 3)</code></pre>
-<pre><code>## [1] 1.171134</code></pre>
-<pre class="r"><code>bc10_pct &lt;- made_shot_counter(shots10, &quot;Backcourt&quot;, bc10_ct, 3)</code></pre>
-<pre><code>## [1] 0.1073684</code></pre>
-<pre class="r"><code># total number of shots by area 2019
-pt19_pct &lt;- made_shot_counter(shots19, &quot;In The Paint (Non-RA)&quot;, pt19_ct, 2)</code></pre>
-<pre><code>## [1] 0.8073003</code></pre>
-<pre class="r"><code>ra19_pct &lt;- made_shot_counter(shots19, &quot;Restricted Area&quot;, ra19_ct, 2)</code></pre>
-<pre><code>## [1] 1.258481</code></pre>
-<pre class="r"><code>mr19_pct &lt;- made_shot_counter(shots19, &quot;Mid-Range&quot;, mr19_ct, 2)</code></pre>
-<pre><code>## [1] 0.8056499</code></pre>
-<pre class="r"><code>lc19_pct &lt;- made_shot_counter(shots19, &quot;Left Corner 3&quot;, lc19_ct, 3)</code></pre>
-<pre><code>## [1] 1.158582</code></pre>
-<pre class="r"><code>ab19_pct &lt;- made_shot_counter(shots19, &quot;Above the Break 3&quot;, ab19_ct, 3)</code></pre>
-<pre><code>## [1] 1.048072</code></pre>
-<pre class="r"><code>rc19_pct &lt;- made_shot_counter(shots19, &quot;Right Corner 3&quot;, rc19_ct, 3)</code></pre>
-<pre><code>## [1] 1.133166</code></pre>
-<pre class="r"><code>bc19_pct &lt;- made_shot_counter(shots19, &quot;Backcourt&quot;, bc19, 3)</code></pre>
-<pre><code>## [1] 19779.48</code></pre>
-<pre class="r"><code># df for 2010 plot
+pt10_pct &lt;- made_shot_counter(shots10, &quot;In The Paint (Non-RA)&quot;, pt10_ct, 2)
+ra10_pct &lt;- made_shot_counter(shots10, &quot;Restricted Area&quot;, ra10_ct, 2)
+mr10_pct &lt;- made_shot_counter(shots10, &quot;Mid-Range&quot;, mr10_ct, 2)
+lc10_pct &lt;- made_shot_counter(shots10, &quot;Left Corner 3&quot;, lc10_ct, 3)
+ab10_pct &lt;- made_shot_counter(shots10, &quot;Above the Break 3&quot;, ab10_ct, 3)
+rc10_pct &lt;- made_shot_counter(shots10, &quot;Right Corner 3&quot;, rc10_ct, 3)
+bc10_pct &lt;- made_shot_counter(shots10, &quot;Backcourt&quot;, bc10_ct, 3)
+
+# total number of shots by area 2019
+pt19_pct &lt;- made_shot_counter(shots19, &quot;In The Paint (Non-RA)&quot;, pt19_ct, 2)
+ra19_pct &lt;- made_shot_counter(shots19, &quot;Restricted Area&quot;, ra19_ct, 2)
+mr19_pct &lt;- made_shot_counter(shots19, &quot;Mid-Range&quot;, mr19_ct, 2)
+lc19_pct &lt;- made_shot_counter(shots19, &quot;Left Corner 3&quot;, lc19_ct, 3)
+ab19_pct &lt;- made_shot_counter(shots19, &quot;Above the Break 3&quot;, ab19_ct, 3)
+rc19_pct &lt;- made_shot_counter(shots19, &quot;Right Corner 3&quot;, rc19_ct, 3)
+bc19_pct &lt;- made_shot_counter(shots19, &quot;Backcourt&quot;, bc19, 3)
+
+# df for 2010 plot
 bar_dat10 &lt;- data.frame(
   shot_zone = c(&quot;In The Paint (Non-RA)&quot;, &quot;Restricted Area&quot;, &quot;Mid-Range&quot;, &quot;Left Corner 3&quot;, &quot;Above the Break 3&quot;, &quot;Right Corner 3&quot;),
   ptspershot = c(pt10_pct, ra10_pct, mr10_pct, lc10_pct, ab10_pct, rc10_pct)
@@ -521,13 +492,13 @@ plot9 &lt;- ggplot(ptsperdat, aes(x = shot_zone, y = ptspershot.x, fill = ptsper
   labs(title = &quot;Points Per Shot By Zone&quot;,
        subtitle = &quot;2009-10 Regular Season&quot;) 
 plot9</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="index_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <pre class="r"><code>plot27 &lt;- ggplot(ptsperdat,
                 aes(x = shot_zone)) +
   geom_bar(aes(y = ptspershot.y), stat = &quot;identity&quot;) +
   geom_bar(aes(y = ptspershot.x), stat = &quot;identity&quot;)
 plot27</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
+<p><img src="index_files/figure-html/unnamed-chunk-11-2.png" width="672" /></p>
 <pre class="r"><code>  #labs(title = &quot;Points Per Shot By Zone&quot;,
      #  subtitle = &quot;2018-19 Regular Season&quot;) +
   #scale_x_continuous(name = &quot;Shot Distance (ft)&quot;,
