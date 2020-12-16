@@ -27,10 +27,10 @@ theme_set(theme_cowplot())
 ## Core Questions
 
 1. What is the expected value of a blackjack hand?
-2. When is probability in the player's favor?
+2. How do the cards on the table influence the probability of a player winning?
 3. How can a player maximize their expected value?
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 dat1 <- read_csv("data/blkjckhands.csv") 
 ```
 
@@ -65,12 +65,12 @@ ggplot(dat1, aes(card1)) +
 ```
 
 ```{r, warning = FALSE}
-summary(dat1$dealcard1)
+summary(dat1$dealcard2)
 
-ggplot(dat1, aes(dealcard1)) +
+ggplot(dat1, aes(dealcard2)) +
   geom_bar() +
-  labs(title = "Frequency of Dealer Card 1",
-       x = "Dealer Card 1",
+  labs(title = "Frequency of Dealer Card 2",
+       x = "Dealer Card 2",
        y = "Frequency") +
   scale_x_discrete(limit = 1:11, breaks = 1:11)
 ```
@@ -104,7 +104,7 @@ summary(dat1$plwinamt)
 ```{r}
 summary(dat1$dlwinamt)
 ```
-  In a blackjack game, like the one being analyzed, each player receives two cards. Possible values range from 1-11 for each card, and 2-21 for the total hand value. The dealer is also dealt two cards, however one is face down. This forces the player to make a decision based on limited information. The player must choose to hit or stand.* All while playing against the dealer who has a hidden card. Another catch is that the dealer must stand on any 17. The object of the game is to beat the dealer by gaining a hand valued higher than theirs without exceeding 21. Above, I have calculated the summary statistics for important values. The values included will be the basis for my analysis. The trade secrets of blackjack known by players as "The Book" hides in the numbers shown above.
+  In a blackjack game, like the one being analyzed, each player receives two cards. Possible values range from 1-11 for each card, and 2-21 for the total hand value. The dealer is also dealt two cards, however one is face down. This forces the player to make a decision based on limited information. The player must choose to hit or stand.* All while playing against the dealer who has a hidden card. Another catch is that the dealer must stand on any 17. The object of the game is to beat the dealer by gaining a hand valued higher than theirs without exceeding 21. Above, I have calculated the summary statistics for important values. The values included will be the basis for my analysis. 
   
 *Other options that I won't dive into for purposes of this analysis: double down, split.
 
@@ -113,6 +113,9 @@ summary(dat1$dlwinamt)
 
 
 ## Question 1
+
+What is the expected value of a blackjack hand?
+
   Expected value is a very useful tool for determining the underlying value in a game or market. Blackjack is no different. To calculate expected value multiply the monetary win/loss by the chance that thing happens. Then add up all the individual values to determine your expected value for the game. Below I have calculated the expected value of this blackjack data. 
 ```{r}
 # percent chance dealer bust
@@ -197,7 +200,8 @@ This chunk calculates the house edge to be just under 5 percent. Which leads per
 
 ## Question 2
 
-When is probability in the player's favor?
+How do the cards on the table influence the probability of a player winning?
+
 ```{r}
 # add sumofcards vs pct win/loss
 
@@ -292,6 +296,7 @@ plot3
 ## Question 3
 
 How can a player maximize their expected value?
+
 ```{r}
 
 #Determine hit or stand based on ply2cardsum

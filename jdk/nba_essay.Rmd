@@ -1,0 +1,8 @@
+---
+title: "nba_essay"
+author: "Jack Kincannon"
+date: "12/15/2020"
+output: pdf_document
+---
+
+

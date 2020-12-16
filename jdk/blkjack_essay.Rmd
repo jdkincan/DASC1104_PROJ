@@ -1,0 +1,89 @@
+---
+title: "blkjck_essay"
+author: "Jack Kincannon"
+date: "12/15/2020"
+output: pdf_document
+---
+
+# Introduction
+
+  Blackjack is known around the world as a timeless casino game. The rules are fairly simple, but the depth is shocking. Someone can play for years and still not have seen all the possibilities at a table. However, just like any other card game, basic probabilities can be calculated, and therefore an optimal strategy can be determined. In this analysis, I hope to showcase my data science skill by visualizing blackjack, and its infinite probabilities. Additionally, I hope to provide reasoning for why blackjack is played with a predetermined strategy. 
+
+
+## Core Questions
+
+1. What is the expected value of a blackjack hand?
+2. How do the cards on the table influence the probability of a player winning?
+3. Considering the conditional probabilities what decision should the player make?
+
+# EDA
+
+  For this project, I am examining a dataset that contains 90,000 blackjack hands with 6 players per hand. The data is stored in the blkjckhands.csv and it was downloaded from a repository on Kaggle that is linked below. The data consists of 898,078 observations of 21 variables. The variables X1 and PlayerNo describe the 6 players present in each hand, they are dbl numeric and a character string respectively. The variables: card1, card2, card3, card4, card5, dealcard1, dealcard2, dealcard3, dealcard4, and dealcard5 describe the numeric value of the card dealt. The number at the end of the variable name corresponds to which card was dealt first in the sequence. If no card is dealt 0 takes the place of NA. Variables sumofcards and sumofdeal are numeric values which total to the value of the cards dealt to each player and the dealer, per hand, respectively. Blkjck is a simple character string with two unique values nowin and win. Winloss describes each players outcome simplistically per hand. Character strings Loss and Win are the two options. Variables plybustbeat and dlbustbeat describe the hand outcome in more detail with unique values Beat, Plwin, Bust, DlBust, and Push for plybustbeat with Dlwin, Beat, PlBust, Bust, and Push for dlbustbeat. Each of these variables are of class character. Plwinamt and dlwinamt describe the hand outcome monetarily. These values are numeric and a base bet of $10 is assumed for each player each hand. The final variable play2cardsum is interesting. It describes the starting position from which players will make their decisions.
+
+  In a blackjack game -- like the one being analyzed -- each player receives two cards. Possible values range from 1-11 for each card, and 2-21 for the total hand value. (An ace can be played with a value of 1 or 11.) The dealer is also dealt two cards, however one is face down. This forces the player to make a decision based on limited information. The player must choose to hit or stand.* All while playing against the dealer who has a hidden card. Another catch is that the dealer must stand on any 17. The object of the game is to beat the dealer by gaining a hand valued higher than theirs without exceeding 21. Above, I have calculated the summary statistics for important values. The values included will be the basis for my analysis. 
+  The most important decision a player must make is to hit or stand. Seasoned blackjack players abide by a strategy known as "The Book"; which tells them when to do what. My analysis will uncover the book through calculation of a wide probability spectrum. First, I will show how blackjack is similar to all other casino games. Then, I will examine how the cards players and dealers receive influence the chances of a player winning. Finally, by combining these and earlier calculations I will effectively describe blackjack strategy. 
+
+*Other options that I won't dive into for purposes of this analysis: double down, split.
+
+# Data Analysis
+
+
+## Question 1
+
+__What is the expected value of a blackjack hand?__
+
+  Expected value is a very useful tool for determining the underlying value in a game or market. Blackjack is no different. To calculate expected value: multiply the monetary win/loss -- for a given event -- by the probability that event occurs. Then, add up all the individual values to determine the expected value for the game. Below I have calculated the expected value of this blackjack game.
+
+Above is the chance a player wins, without getting a blackjack. 
+
+The percent chance of a push is shown above.
+
+The percent chance of a loss is shown above.
+
+The chance a player wins, while also receiving a blackjack.
+
+  By combining the probabilities listed, I calculated the true expected value of this blackjack game. The output represents what a player stands to lose on average each hand. This is assuming the player bets $10 each time. A win is payed out 1:1 and blackjacks are payed out 3:2. 
+  The negative expected value means that blackjack is an unfair game. In the long run you will lose, just like any other casino game. 
+
+When the the probability of a push is excluded the house edge can be easily calculated. This above chunk calculates the house edge to be just under 5 percent. This is due to the power of the dealer's predetermined strategy. The player is much more exposed. I will explore what this means, and how it influences overall strategy later. 
+
+## Question 2
+
+__How do the cards on the table influence the probability of a player winning?__
+
+Here we see that out of 19 possible starting card sums the player is only favored to win in about 5 scenarios. The 19, 20, and 21 are self explanatory, however, the 10 and 11 are interesting. A player's probability is relatively good when starting with the 10 and 11. This can be explained by examining card value frequency explored in the EDA. Being dealt a card with a value of 10 is by far the most likely, therefore your chances of a high value hand are pretty good. 
+
+add chance of player win vs player card sum
+
+From this distribution we can see that a player's primary goal should be to obtain a card sum greater than x. Players are only favored in x of x possibillites. Considering the probability cliff, a player should hit on any card sum value less than x.  
+
+add percentage of bust by deal hand 
+
+percent player win vs percent dealer bust by dealer up card
+
+  A bust occurs when the card value sum is greater than 21, and the result is an automatic loss. Therefore, the probability of a dealer bust, given their face up card, is the second most important factor when considering a player's action in a blackjack hand. (Their starting card sum being the most important.) If the dealer has x to x then the player should consider staying if their hand value is greater than x. IF CHANCE OF BUST IS HIGHER THAN CHANCE OF AVG PLAYER WIN. OR IF CHANCE OF BUST IS HIGHER THAN THE PLAYERS CHANCE TO WIN ON THAT CARD SUM (EXCLUDING BELOW 12)
+  
+  If a player bases their decision solely off their card value sum they would be playing a sub optimal hand. This is when "The Book" really starts to appear. 
+
+
+## Question 3
+
+__Considering the conditional probabilities what decision should the player make?__
+
+table 
+  deal up card vs play 2 card sum 
+cell value: hit or stand 
+
+  Based upon all of the probabilities explored above I have computed a basic optimal strategy similar to "The Book". The table is a wealth of information and can guide a player through any blackjack situation. This is the best way to play the game, and will net a player the greatest possible profit. 
+
+# Conclusion 
+
+  Blackjack is an unfair game. However, the promise of excitement and potential profits lures millions of players around the world. You can win in blackjack, but it entirely due to luck. The luck of the draw. In this analysis, I have shown when a player is predicted to win, and how to maximize a player's chance of winning. Do what you will with this information. Gamble responsibly! 
+  
+  P.S. One more bit of advice: If you get up get out! You will lose in the long run. 
+
+## Sources
+
+[1] R. Nair, “900,000 Hands of BlackJack Results,” Kaggle, 06-Apr-2019. [Online]. Available: https://www.kaggle.com/mojocolors/900000-hands-of-blackjack-results. [Accessed: 1-Dec-2020]. 
+
+[2] Too many hours at a blackjack table.
