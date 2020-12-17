@@ -13,7 +13,7 @@ tags: []
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>Nearly all sports have one thing in common; a final score. It’s the most important number, and some say it’s the only one that matters. In spite of that view, many sports have been flipped on their head by a proper understanding of key numbers. My mind automatically drifts to the story told in Micheal Lewis’ <em>“Moneyball”</em>. In which, the MLB was revolutionized by the analytical ideas of a few baseball black sheep. Like many other leagues, the NBA was not immune to this revolution. Economics and statistics have transformed the league. With a focus on reaching maximum point scoring efficiency. The comprehensive story is beautifully told in Kirk Goldsberry’s book <em>“Sprawlball”</em>. The novel shows how quantitative analysis pushed all NBA teams to dramatically change their strategy. My analysis will ultimately determine if better “Sprawlball” execution results in more games won. This will be achieved through exploration of key questions.</p>
+<p>Nearly all sports have one thing in common; a final score. It’s the most important number, and some say it’s the only one that matters. In spite of that view, many sports have been flipped on their head by a proper understanding of key numbers. My mind automatically drifts to the story told in Micheal Lewis’ <em>“Moneyball”</em>. In which, the MLB was revolutionized by the analytic ideas of a few baseball black sheep. Like many other leagues, the NBA was not immune to this revolution. Economics and statistics have transformed the league. With a focus on reaching maximum point scoring efficiency. The comprehensive story is beautifully told in Kirk Goldsberry’s book <em>“Sprawlball”</em>. The novel shows how quantitative analysis pushed all NBA teams to dramatically change their strategy. My analysis will show how and why the entire NBA warped in favor of the vision laid out in <em>“Sprawlball”</em>. This will be achieved through exploration of key questions.</p>
 <div id="key-questions" class="section level2">
 <h2>Key Questions</h2>
 <ol style="list-style-type: decimal">
@@ -21,7 +21,7 @@ tags: []
 <li>What led NBA teams to adopt this new strategy?</li>
 <li>How can proper strategy execution be quantified?</li>
 </ol>
-<p>To examine this topic I collected advanced shot data directly form the NBA Stats website. I made use of a python web-scraper that included the requests and json modules. A tutorial was used to help build the web-scraper. (If you’d like to try for yourself the link is posted below.) The data includes every shot taken during the 2009-2010 and the 2018-2019 NBA Regular Seasons. It includes an impressive amount of variables that describe everything you could need.</p>
+<p>To examine this topic I collected advanced shot data directly from the NBA Stats website. I made use of a python web-scraper that included the requests and json modules. A tutorial was used to help build the web-scraper. (If you’d like to try for yourself, the link is posted below.) The data includes every shot taken during the 2009-2010 and the 2018-2019 NBA Regular Seasons. It includes an impressive amount of variables that describe everything you could need.</p>
 </div>
 </div>
 <div id="exploratory-data-analysis" class="section level1">
@@ -55,7 +55,7 @@ shots19 &lt;- read_csv(&quot;data/nba_shots_2019.csv&quot;)</code></pre>
 ## $ GAME_DATE           &lt;dbl&gt; 20091027, 20091027, 20091027, 20091027, 20091027,…
 ## $ HTM                 &lt;chr&gt; &quot;CLE&quot;, &quot;CLE&quot;, &quot;CLE&quot;, &quot;CLE&quot;, &quot;CLE&quot;, &quot;CLE&quot;, &quot;CLE&quot;, …
 ## $ VTM                 &lt;chr&gt; &quot;BOS&quot;, &quot;BOS&quot;, &quot;BOS&quot;, &quot;BOS&quot;, &quot;BOS&quot;, &quot;BOS&quot;, &quot;BOS&quot;, …</code></pre>
-<p>My datasets for this analysis contain over 400,000 individual shots taken in the National Basketball Association during the 2009-2010, and 2018-2019 Regular Seasons. The data is stored in the nba_shots_2010.csv and the nba_shots_2019.csv. The 2010 data consists of 200,966 observations of 24 variables. The 2019 data consists of 219,458 observations and 24 variables. The variables in each dataset are the same. GRID_TYPE is negligible, it is a class character with one unique value. GAME_ID, GAME_EVENT_ID, PLAYER_ID, and TEAM_ID are all either characters or numerics with the purpose of identifying some individual or event. PLAYER_NAME and TEAM_NAME are more useful versions of the ID variables, being stored as human readable characters. PERIOD identifies the current period when a given shot was taken, it is stored as a numeric. MINUTES_REMAINING and SECONDS_REMAINING, in conjunction, tell the amount of time remaining when the shot was taken and are stored as numerics. EVENT_TYPE tells whether the shot was a Missed Shot or a Made Shot and is stored as a character string. ACTION_TYPE describes the type of shot being taken, there are 45 different types of shots stored in the data, and they are stored as characters. Wow! SHOT_TYPE characters tell us whether a shot was a 3PT Field Goal, or a 2PT Field Goal. SHOT_ZONE_BASIC, SHOT_ZONE_AREA, and SHOT_ZONE_DISTANCE quantify where the shot was taken in 7, 6, and 5 zones respectively. These variables are stored as character strings. LOC_X and LOC_Y are powerful variables that plot a shot’s location on a coordinate plane. They are numeric, as are SHOT_ATTEMPTED_FLAG, and SHOT_MADE_FLAG which are binary numerics and indicate the same information as other statistics. GAME_DATE is stored as a numeric and gives the game date without punctuation. HTM, and VTM give information about the respective home and away teams.</p>
+<p>My datasets for this analysis contain over 400,000 individual shots taken in the National Basketball Association during the 2009-2010, and 2018-2019 Regular Seasons. The data is stored in the nba_shots_2010.csv and the nba_shots_2019.csv. The 2010 data consists of 200,966 observations of 24 variables. The 2019 data consists of 219,458 observations and 24 variables. The variables in each dataset are the same. GRID_TYPE is negligible, it is a class character with one unique value. GAME_ID, GAME_EVENT_ID, PLAYER_ID, and TEAM_ID are all either characters or numerics with the purpose of identifying some individual or event. PLAYER_NAME and TEAM_NAME are more useful versions of the ID variables, being stored as human readable characters. PERIOD identifies the current period 1-4 when a given shot was taken, it is stored as a numeric. MINUTES_REMAINING and SECONDS_REMAINING, in conjunction, tell the amount of time remaining when the shot was taken and are stored numerically. EVENT_TYPE tells whether the shot was a Missed Shot or a Made Shot and is stored as a character string. ACTION_TYPE describes the type of shot being taken, there are 45 different types of shots stored in the data, and they are stored as characters. Wow! SHOT_TYPE characters tell us whether a shot was a 3PT Field Goal, or a 2PT Field Goal. SHOT_ZONE_BASIC, SHOT_ZONE_AREA, and SHOT_ZONE_DISTANCE quantify where the shot was taken in 7, 6, and 5 zones respectively. These variables are stored as character strings. LOC_X and LOC_Y are powerful variables that plot a shot’s location on a coordinate plane. They are numeric, as are SHOT_ATTEMPTED_FLAG, and SHOT_MADE_FLAG which are binary numeric values and indicate the same information as other statistics. GAME_DATE is stored as a numeric and gives the game date without punctuation. HTM, and VTM give information about the respective home and away teams.</p>
 <pre class="r"><code>shots10_2pt &lt;- shots10 %&gt;%
   select(SHOT_DISTANCE, SHOT_TYPE, SHOT_MADE_FLAG, SHOT_ATTEMPTED_FLAG) %&gt;%
   filter(SHOT_TYPE == &quot;2PT Field Goal&quot;) %&gt;%
@@ -103,7 +103,7 @@ shots10_pct &lt;- shots10_2pt %&gt;%
 # 2019 shots
 shots19_pct &lt;- shots19_2pt %&gt;%
   full_join(shots19_3pt, by = &quot;SHOT_DISTANCE&quot;)</code></pre>
-<p>After examining the dataset, lets draw out some information and plot it over SHOT_DISTANCE by season. The code chunk above’s purpose is to efficiently store new variables that I created. These variables are shot percentage by distance, and points per shot by distance. Both of these values are critical in explaining how <em>“Sprawlball”</em> works and why it is so effective.</p>
+<p>After examining the dataset, lets draw out some information and plot it over SHOT_DISTANCE by season. The above code chunk’s purpose is to efficiently store new variables that I created. These variables are shot percentage by distance, and points per shot by distance. Both of these values are critical in explaining how <em>“Sprawlball”</em> works, and why it is so effective.</p>
 <pre class="r"><code># 2010 EDA1
 #NOTES 
  #invvestigate labels
@@ -119,7 +119,6 @@ plot1 &lt;- ggplot(shots10_pct,
   labs(title = &quot;2PT Field Goals&quot;,
        subtitle = &quot;2009-10 Regular Season&quot;) +
   scale_x_continuous(name = &quot;Shot Distance (ft)&quot;,
-                     breaks = N1,
                      limits = c(0, 22)) +
   scale_y_continuous(name = &quot;Shooting Percentage&quot;,
                      breaks = N2,
@@ -135,10 +134,10 @@ plot2 &lt;- ggplot(shots10_pct,
                 y = shot_percentage_by_distance.y * 100,
                 fill = shot_percentage_by_distance.y)) +
   geom_bar(stat = &quot;identity&quot;) +
+  geom_hline(yintercept = 30) +
   labs(title = &quot;3PT Field Goals&quot;,
        subtitle = &quot;2009-10 Regular Season&quot;) +
   scale_x_continuous(name = &quot;Shot Distance (ft)&quot;,
-                     breaks = N3,
                      limits = c(21, 36)) +
   scale_y_continuous(name = &quot;Shooting Percentage&quot;,
                      breaks = N4,
@@ -146,12 +145,10 @@ plot2 &lt;- ggplot(shots10_pct,
   scale_fill_binned(low = &quot;skyblue1&quot;, high = &quot;firebrick&quot;) +
   theme(legend.title = element_blank())
 
-plot1 / plot2</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<pre class="r"><code>N1 &lt;- (0:22)
+N1 &lt;- (0:22)
 N2 &lt;- c(30, 50, 70)
 
-plot1 &lt;- ggplot(shots19_pct,
+plot3 &lt;- ggplot(shots19_pct,
                 aes(x = SHOT_DISTANCE,
                     y = shot_percentage_by_distance.x * 100,
                     fill = shot_percentage_by_distance.x)) +
@@ -159,7 +156,6 @@ plot1 &lt;- ggplot(shots19_pct,
   labs(title = &quot;2PT Field Goals&quot;,
        subtitle = &quot;2018-19 Regular Season&quot;) +
   scale_x_continuous(name = &quot;Shot Distance (ft)&quot;,
-                     breaks = N1,
                      limits = c(0, 22)) +
   scale_y_continuous(name = &quot;Shooting Percentage&quot;,
                      breaks = N2,
@@ -170,15 +166,15 @@ plot1 &lt;- ggplot(shots19_pct,
 N3 &lt;- (21:35)
 N4 &lt;- c(10, 20, 30, 40, 50)
 
-plot2 &lt;- ggplot(shots19_pct,
+plot4 &lt;- ggplot(shots19_pct,
                 aes(x = SHOT_DISTANCE,
                 y = shot_percentage_by_distance.y * 100,
                 fill = shot_percentage_by_distance.y)) +
   geom_bar(stat = &quot;identity&quot;) +
+  geom_hline(yintercept = 30) +
   labs(title = &quot;3PT Field Goals&quot;,
        subtitle = &quot;2018-19 Regular Season&quot;) +
   scale_x_continuous(name = &quot;Shot Distance (ft)&quot;,
-                     breaks = N3,
                      limits = c(21, 36)) +
   scale_y_continuous(name = &quot;Shooting Percentage&quot;,
                      breaks = N4,
@@ -186,9 +182,11 @@ plot2 &lt;- ggplot(shots19_pct,
   scale_fill_binned(low = &quot;skyblue1&quot;, high = &quot;firebrick&quot;) +
   theme(legend.title = element_blank())
 
-plot1 / plot2</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<p>These plots are meant to look at the problem from a very basic level. However, already we see relationships forming in the data. Those with a keen eye will notice that there is not a significant decrease in shot percentage from once you cross the 3pt line at roughly 22ft. Players are generally consistent when shooting from about 3-25 ft. This fact will give rise to extremely important information in the data analysis section.</p>
+(plot1 + plot3) </code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>(plot2 + plot4)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-4-2.png" width="672" /></p>
+<p>These plots are meant to look at the problem from a very basic level. However, already we see relationships forming in the data. Those with a keen eye will notice that there is not a significant decrease in shot percentage from once you cross the 3-point line at roughly 22ft. Players are generally consistent when shooting from about 3-25 ft. This fact will give rise to extremely important information in the data analysis section.</p>
 <pre class="r"><code># percentage of shots by area 
 N5 &lt;- length(shots10$SHOT_ATTEMPTED_FLAG)
 N6 &lt;- length(shots19$SHOT_ATTEMPTED_FLAG)
@@ -244,37 +242,40 @@ pie_dat19 &lt;- data.frame(
                 &quot;Backcourt&quot;),
   percent = c(pt19, ra19, mr19, lc19, ab19, rc19, bc19)
 )</code></pre>
-<pre class="r"><code>plot3 &lt;- ggplot(pie_dat10, aes(x=&quot;&quot;, y = percent, fill = shot_zone)) +
+<pre class="r"><code>plot5 &lt;- ggplot(pie_dat10, aes(x=&quot;&quot;, y = percent, fill = shot_zone)) +
   geom_bar(stat = &quot;identity&quot;, width = 3, color = &quot;white&quot;) +
   coord_polar(&quot;y&quot;, start=0) +
   theme_void() + 
   labs(title = &quot;Shot Distribution By Zone&quot;, subtitle = &quot;2009-10 Regular Season&quot;) +
-  theme(legend.title = element_text(&quot;Shot Zone&quot;)) +
+  theme(legend.title = element_blank()) +
   scale_fill_brewer(palette=&quot;Pastel1&quot;)
   
-plot4 &lt;- ggplot(pie_dat19, aes(x=&quot;&quot;, y = percent, fill = shot_zone)) +
+plot6 &lt;- ggplot(pie_dat19, aes(x=&quot;&quot;, y = percent, fill = shot_zone)) +
   geom_bar(stat = &quot;identity&quot;, width = 3, color = &quot;white&quot;) +
   coord_polar(&quot;y&quot;, start=0) +
   theme_void() + 
   labs(title = &quot;Shot Distribution By Zone&quot;, subtitle = &quot;2018-19 Regular Season&quot;) +
-  theme(legend.title = element_text(&quot;Shot Zone&quot;)) +
+  theme(legend.title = element_blank()) +
   scale_fill_brewer(palette=&quot;Pastel1&quot;)
 
-plot3 + plot4</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<p>Here you can see how frequently players shoot in certain zones relative to one another. The drastic change seen in this graph is yet another fundamental component of <em>“Sprawlball”</em>, that connects right back to the first set of plots. As mentioned, the shooting percentage does not decrease by a significant amount (hypoth test) per ft once you go outside of the restricted area. This explains the contraction in the “Mid-Range” and the near doubling of the “Above the Break 3”. Why do more for less? Is probably a question players have asked themselves. Stepping back to launch an open 3 has become the most profitable play in basketball. In the next section I’ll get specific on what exactly this strategy is and why it is so popular today.</p>
+plot5 + plot6</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Here you can see how frequently players shoot in certain zones relative to one another. The drastic change seen in this graph is yet another fundamental component of <em>“Sprawlball”</em>, that connects right back to the first set of plots. As mentioned, the shooting percentage does not decrease by a significant amount per foot once you go outside of the restricted area. This explains the contraction in the “Mid-Range” and the near doubling of the “Above the Break 3”. Why do more for less? Is probably a question players have asked themselves. Stepping back to launch an open 3-pointer has become the most profitable play in basketball. In the next section I’ll get specific on what exactly this strategy is and why it is so popular today.</p>
 </div>
 <div id="data-analysis" class="section level1">
 <h1>Data Analysis</h1>
 <div id="question-1" class="section level2">
 <h2>Question 1</h2>
-<p>What is “Sprawlball”?</p>
-<pre class="r"><code>zones &lt;- c(&quot;Mid-Range&quot;, &quot;Right Corner 3&quot;, &quot;Left Corner 3&quot;, &quot;Above the Break 3&quot;)
+<p><strong>What is “Sprawlball”?</strong></p>
+<pre class="r"><code>zones &lt;- c(&quot;Mid-Range&quot;,
+           &quot;Right Corner 3&quot;,
+           &quot;Left Corner 3&quot;,
+           &quot;Above the Break 3&quot;)
 
 shots10_zone &lt;- shots10 %&gt;%
   filter(SHOT_ZONE_BASIC %in% zones) 
 
-plot5 &lt;- ggplot(shots10_zone, aes(LOC_X, LOC_Y)) + 
+plot7 &lt;- ggplot(shots10_zone, aes(LOC_X, LOC_Y)) + 
   geom_hex(binwidth = 20, na.rm = FALSE) +
   scale_fill_gradient(low=&quot;skyblue1&quot;, high=&quot;firebrick&quot;) +
   labs(title = &quot;All Shots Taken Outside of the Paint&quot;, subtitle = &quot;2009-2010 NBA Season&quot;, x = &quot;&quot;, y = &quot;&quot;, legend = &quot;Frequency&quot;) 
@@ -283,7 +284,7 @@ plot5 &lt;- ggplot(shots10_zone, aes(LOC_X, LOC_Y)) +
 shots19_zone &lt;- shots19 %&gt;%
   filter(SHOT_ZONE_BASIC %in% zones)
 
-plot6 &lt;- ggplot(shots19_zone, aes(LOC_X, LOC_Y)) + 
+plot8 &lt;- ggplot(shots19_zone, aes(LOC_X, LOC_Y)) + 
   geom_hex(binwidth = 20, na.rm = FALSE) +
   scale_fill_gradient(low=&quot;skyblue1&quot;, high=&quot;firebrick&quot;) +
   labs(title = &quot;&quot;, subtitle = &quot;2018-2019 NBA Season&quot;, x = &quot;&quot;, y = &quot;&quot;)
@@ -294,24 +295,16 @@ plot6 &lt;- ggplot(shots19_zone, aes(LOC_X, LOC_Y)) +
 layout &lt;- &#39;
 AB
 &#39;
-wrap_plots(A = plot5, B = plot6, design = layout)</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" width="672" />
-That is “Sprawlball”. This shooting distribution is essential to the strategy. At a basic level it attempts to spread the floor in order to take as many high value shots as possible. Here we see a clearly defined transition over just 9 years, with shots becoming more concentrated around high value areas. Without so much as a picture to help plot the 3pt line, it’s there. In the 2019 data, the line appears in stark contrast with the rest of the floor. We are now realizing the full potential of what the line brings to the game. As players get better at shooting long shots the value of a 3pter continues to rise. This information is clearly displayed in the plots below, and will be further explored throughout the analysis.</p>
+wrap_plots(A = plot7, B = plot8, design = layout)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>That is “Sprawlball”. This shooting distribution is essential to the strategy. At a basic level it attempts to spread the floor in order to take as many high value shots as possible. Here we see a clearly defined transition over just 9 years, with shots becoming more concentrated around high value areas. Without so much as a picture to help plot the 3-point line, it’s there. In the 2019 data, the line appears in stark contrast with the rest of the floor. We are now realizing the full potential of what the line brings to the game. As players get better at shooting long shots the value of a 3-pointer continues to rise. This information is clearly displayed in the plots below, and will be further explored throughout the analysis.</p>
 </div>
 <div id="question-2" class="section level2">
 <h2>Question 2</h2>
-<p>What led NBA teams to adopt this new strategy?</p>
-<pre class="r"><code># shots10_pct 
-#NOTES
-  #Add Legend 
-  #label hlines
-  # text layer?
-# Data ISSUE
- # inconsistent 3 collection
-
-plot7 &lt;- ggplot(shots10_pct, aes(x = SHOT_DISTANCE)) +
+<p><strong>What led NBA teams to adopt this new strategy?</strong></p>
+<pre class="r"><code>plot9 &lt;- ggplot(shots10_pct, aes(x = SHOT_DISTANCE)) +
   geom_line(aes(y = points_per_shot.x), color = &quot;skyblue1&quot;) +
-  geom_line(aes(y = points_per_shot.y), color = &quot;deepskyblue1&quot;) +
+  geom_line(aes(y = points_per_shot.y), color = &quot;palegreen1&quot;) +
   labs(title = &quot;Relative Value of Field Goals&quot;,
        subtitle = &quot;2009-10 Regular Season&quot;,
        x = &quot;Shot Distance (ft)&quot;,
@@ -322,9 +315,9 @@ plot7 &lt;- ggplot(shots10_pct, aes(x = SHOT_DISTANCE)) +
   xlim(1, 34) +
   ylim(0.0, 1.5)
 
-plot8 &lt;- ggplot(shots19_pct, aes(x = SHOT_DISTANCE)) +
+plot10 &lt;- ggplot(shots19_pct, aes(x = SHOT_DISTANCE)) +
   geom_line(aes(y = points_per_shot.x), color = &quot;skyblue1&quot;) +
-  geom_line(aes(y = points_per_shot.y), color = &quot;deepskyblue1&quot;) +
+  geom_line(aes(y = points_per_shot.y), color = &quot;palegreen1&quot;) +
   labs(title = &quot;&quot;,
        subtitle = &quot;2018-19 Regular Season&quot;,
        x = &quot;Shot Distance (ft)&quot;,
@@ -335,12 +328,7 @@ plot8 &lt;- ggplot(shots19_pct, aes(x = SHOT_DISTANCE)) +
   xlim(1, 34) +
   ylim(0.0, 1.5)
 
-plot7 + plot8</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" width="672" />
-This graph makes the strategy extremely clear. 3 pointers and layups are the only things worth over 1 point per shot, by a lot.</p>
-<pre class="r"><code>#HIDE OUTPUT
 
-# percentage of shots by area 
 
 # counts total shots in each zone by year
 shot_counter1 &lt;- function(x, y) {
@@ -400,61 +388,139 @@ bc19_pct &lt;- made_shot_counter(shots19, &quot;Backcourt&quot;, bc19, 3)
 
 # df for 2010 plot
 bar_dat10 &lt;- data.frame(
-  shot_zone = c(&quot;In The Paint (Non-RA)&quot;, &quot;Restricted Area&quot;, &quot;Mid-Range&quot;, &quot;Left Corner 3&quot;, &quot;Above the Break 3&quot;, &quot;Right Corner 3&quot;),
+  shot_zone = c(&quot;In The Paint (Non-RA)&quot;,
+                &quot;Restricted Area&quot;,
+                &quot;Mid-Range&quot;,
+                &quot;Left Corner 3&quot;,
+                &quot;Above the Break 3&quot;,
+                &quot;Right Corner 3&quot;),
   ptspershot = c(pt10_pct, ra10_pct, mr10_pct, lc10_pct, ab10_pct, rc10_pct)
 )
 
 # df for 2019 plot
 bar_dat19 &lt;- data.frame(
-  shot_zone = c(&quot;In The Paint (Non-RA)&quot;, &quot;Restricted Area&quot;, &quot;Mid-Range&quot;, &quot;Left Corner 3&quot;, &quot;Above the Break 3&quot;, &quot;Right Corner 3&quot;),
+  shot_zone = c(&quot;In The Paint (Non-RA)&quot;,
+                &quot;Restricted Area&quot;,
+                &quot;Mid-Range&quot;,
+                &quot;Left Corner 3&quot;,
+                &quot;Above the Break 3&quot;,
+                &quot;Right Corner 3&quot;),
   ptspershot = c(pt19_pct, ra19_pct, mr19_pct, lc19_pct, ab19_pct, rc19_pct)
 )
 
 # combined df
 ptsperdat &lt;- bar_dat10 %&gt;%
-  left_join(bar_dat19, by = &quot;shot_zone&quot;)</code></pre>
-<p>The chunk above makes analysis of shot percentage by zone a reality. Therefore this data can also be used to visualize points per shot by zone. I hope to join this dataset with the main df to plot points per shot by zone, in the same style as the stock distributions.</p>
-<pre class="r"><code># create another plot with zone percentage by year
-# clean up graphs 
+  left_join(bar_dat19, by = &quot;shot_zone&quot;)
 
-plot9 &lt;- ggplot(ptsperdat, aes(x = shot_zone, y = ptspershot.x, fill = ptspershot.x)) +
+
+
+plot11 &lt;- ggplot(ptsperdat, aes(x = shot_zone,
+                                y = ptspershot.x,
+                                fill = ptspershot.x)) +
   geom_bar(stat = &quot;identity&quot;) +
+  scale_fill_binned(low = &quot;skyblue1&quot;, high = &quot;firebrick&quot;) +
   labs(title = &quot;Points Per Shot By Zone&quot;,
-       subtitle = &quot;2009-10 Regular Season&quot;) 
-plot9</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
-<pre class="r"><code>plot27 &lt;- ggplot(ptsperdat,
-                aes(x = shot_zone)) +
-  geom_bar(aes(y = ptspershot.y), stat = &quot;identity&quot;) +
-  geom_bar(aes(y = ptspershot.x), stat = &quot;identity&quot;)
-plot27</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-11-2.png" width="672" /></p>
-<pre class="r"><code>  #labs(title = &quot;Points Per Shot By Zone&quot;,
-     #  subtitle = &quot;2018-19 Regular Season&quot;) +
-  #scale_x_continuous(name = &quot;Shot Distance (ft)&quot;,
-                    # breaks = N3,
-                    # limits = c(0, 36)) +
-  #scale_y_continuous(name = &quot;Shooting Percentage&quot;,
-               #      breaks = N4,
-                 #    limits = c(0, 80)) +
-  #scale_fill_binned(low = &quot;skyblue1&quot;, high = &quot;firebrick&quot;) +
-  #theme(legend.title = element_blank())</code></pre>
+       subtitle = &quot;2009-10 Regular Season&quot;,
+       y = &quot;Points Per Shot&quot;,
+       x = &quot;Shot Zone&quot;) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+        legend.title = element_blank())
+
+plot9 + plot10</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre class="r"><code>plot11</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-8-2.png" width="672" /></p>
+<p>These plots clearly explains why the distribution exposed in Question 1 changed so drastically. 3-pointers and layups are the best bang for your buck, by a lot. The charts combine to paint a powerful picture of why teams shifted their focus. The difference in value was always there. However, teams failed to take advantage of it until recently. Again, similar to <em>“Moneyball”</em>; the value always existed, it just had to be discovered.</p>
 </div>
 </div>
 <div id="question-3" class="section level1">
 <h1>Question 3</h1>
-<p>How can proper strategy execution be quantified?</p>
+<p><strong>How can proper strategy execution be quantified?</strong></p>
 <pre class="r"><code># create statistic that combines 
-  # points per shot, 2pt shooting percentage, 3pt attempted percentage, shots by zone, fouls?
-  # create formula that combines these values into one easily readable statistic that can be evaluated on a continuous scale</code></pre>
+zones1 &lt;- c(&quot;Restricted Area&quot;,
+            &quot;Right Corner 3&quot;,
+            &quot;Left Corner 3&quot;,
+            &quot;Above the Break 3&quot;)
+
+totl_team_shots &lt;- shots19 %&gt;%
+  group_by(TEAM_NAME) %&gt;%
+  summarise(count1 = n(), .groups = &quot;keep&quot;)
+
+
+val_shots &lt;- shots19 %&gt;%
+  left_join(totl_team_shots, by = &quot;TEAM_NAME&quot;) %&gt;%
+  group_by(TEAM_NAME) %&gt;%
+  filter(SHOT_ZONE_BASIC %in% zones1) %&gt;%
+  mutate(val_shot_pct = n() / count1, .groups = &quot;keep&quot;) %&gt;%
+  arrange(desc(val_shot_pct)) %&gt;%
+  distinct(TEAM_NAME, val_shot_pct)
+
+shots_by_points &lt;- shots19 %&gt;%
+  left_join(totl_team_shots, by = &quot;TEAM_NAME&quot;) %&gt;%
+  filter(SHOT_MADE_FLAG == 1) %&gt;%
+  group_by(TEAM_NAME, SHOT_TYPE) %&gt;%
+  mutate(count2 = n(), .groups = &quot;keep&quot;) %&gt;%
+  distinct(TEAM_NAME, SHOT_TYPE, count2, count1)
+
+pts_2_team &lt;- shots19 %&gt;%
+  left_join(shots_by_points, by = &quot;TEAM_NAME&quot;) %&gt;%
+  filter(SHOT_TYPE.y == &quot;2PT Field Goal&quot;) %&gt;%
+  summarise(pts_2 = 2 * count2, TEAM_NAME, count1) %&gt;%
+  distinct(TEAM_NAME, pts_2, count1)
+
+pts_3_team &lt;- shots19 %&gt;%
+  left_join(shots_by_points, by = &quot;TEAM_NAME&quot;) %&gt;%
+  filter(SHOT_TYPE.y == &quot;3PT Field Goal&quot;) %&gt;%
+  summarise(pts_3 = 3 * count2, TEAM_NAME) %&gt;%
+  distinct(TEAM_NAME, pts_3)
+
+totl_pts_team &lt;- pts_2_team %&gt;%
+  left_join(pts_3_team, by = &quot;TEAM_NAME&quot;) 
+
+team_pts_per &lt;- shots19 %&gt;%
+  left_join(totl_pts_team, by = &quot;TEAM_NAME&quot;) %&gt;%
+  group_by(TEAM_NAME) %&gt;%
+  summarise(total_pts = pts_2 + pts_3,
+            pts_per_shot_team = total_pts / count1, TEAM_NAME,
+            .groups = &quot;keep&quot;) %&gt;%
+  distinct(TEAM_NAME, pts_per_shot_team)
+
+sprawl_stat_dat &lt;- val_shots %&gt;%
+  left_join(team_pts_per, by = &quot;TEAM_NAME&quot;) %&gt;%
+  group_by(TEAM_NAME) %&gt;%
+  summarise(sprawl_stat = val_shot_pct + pts_per_shot_team,
+            .groups = &quot;keep&quot;) %&gt;%
+  arrange(desc(sprawl_stat))
+
+summary(sprawl_stat_dat$sprawl_stat)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   1.595   1.691   1.731   1.734   1.780   1.903</code></pre>
+<pre class="r"><code>sprawl_stat_dat</code></pre>
+<pre><code>## # A tibble: 30 x 2
+## # Groups:   TEAM_NAME [30]
+##    TEAM_NAME             sprawl_stat
+##    &lt;chr&gt;                       &lt;dbl&gt;
+##  1 Houston Rockets              1.90
+##  2 Milwaukee Bucks              1.89
+##  3 Utah Jazz                    1.83
+##  4 Atlanta Hawks                1.81
+##  5 Los Angeles Lakers           1.79
+##  6 Golden State Warriors        1.79
+##  7 Toronto Raptors              1.78
+##  8 Brooklyn Nets                1.78
+##  9 Washington Wizards           1.77
+## 10 Dallas Mavericks             1.76
+## # … with 20 more rows</code></pre>
+<p>The chunk above calculates a statistic that I believe encapsulates basic offensive efficiency by team. The statistic is made up of the sum of 2 numeric values. The first is the percentage of shots that a team took in the most valuable zones (3s and the RA). The second is a team’s total points per shot for the season. The values are then added together so the distribution can be evaluated simplistically. I have coined this new statistic the Shot Efficiency Indicator (SEI). In 2019, teams in the top quartile of the SEI were 50% more likely to make the playoffs than teams in the bottom quartile. Additionally, the last three NBA championship winning teams are included in the top quartile. It is no surprise to any reader of <em>“Sprawlball”</em> that the Rockets top the chart. Their General Manager, at the time, Daryl Morey is famous for building the Rockets with high shot efficiency in mind.</p>
 </div>
 <div id="conclusion" class="section level1">
 <h1>Conclusion</h1>
-<p>I think I can say without a doubt that this change is for the better, as far as team preformance goes. The analysis already provided should be enough to prove this, however I want to extract specific statistical test values that prove the point.</p>
-<p>TBC</p>
+<p>The shift in strategy has led to a dramatic change in the shape and strategy of the NBA. Players are far more likely to been seen, and shoot, on the perimeter. The 4 out 1 in positioning strategy is nearly universal. Players will rotate in a pattern that leaves 4 players outside of the 3-point line and 1 inside. The reason for this – like all other concepts discussed – is it creates valuable shot opportunities. Players get far more 3-point and slice/drive opportunities. This results in made 3s and layups. Therefore, creating the maximum number of points available.</p>
+<p>The change is startling, but it makes so much sense, especially when considering the direction of the world at large. Nearly every major sport has had a data revolution of their own. Just as many other industries have. Big data tools create the opportunity for seemingly impossible analysis. This creates insights and strategy that would have never been found without it. The evolution of the NBA did not happen in a vacuum. Interdisciplinary analysis led to this point, just like the data revolution at large. This change will not cease. As new technologies are developed, more and more complete answers will be found. This is the beauty of data science and new technology. Innovation never ceases.</p>
 <div id="sources" class="section level2">
 <h2>Sources</h2>
-<p><a href="https://datavizardry.com/2020/01/28/nba-shot-charts-part-1/" class="uri">https://datavizardry.com/2020/01/28/nba-shot-charts-part-1/</a></p>
-<p><a href="https://stats.nba.com/stats/shotchartdetail" class="uri">https://stats.nba.com/stats/shotchartdetail</a></p>
+<p>[1] “NBA Stats Shot Chart Detail,” <em>NBA Stats Shot Chart Detail</em> | NBA.com. [Online]. Available: <a href="https://stats.nba.com/stats/shotchartdetail" class="uri">https://stats.nba.com/stats/shotchartdetail</a>. [Accessed: 1-Dec-2020].</p>
+<p>[2] D. Teo, “NBA Shot Charts Part 1: Getting the Data (Python),” DataVizardry, 03-Feb-2020. [Online]. Available: <a href="https://datavizardry.com/2020/01/28/nba-shot-charts-part-1/" class="uri">https://datavizardry.com/2020/01/28/nba-shot-charts-part-1/</a>. [Accessed: 1-Dec-2020].</p>
+<p>[3] K. P. Goldsberry and A. Dana, <em>Sprawlball: a visual tour of the new era of the NBA.</em> Place of publication not identified: Mariner Books, 2020.</p>
 </div>
 </div>

@@ -64,7 +64,7 @@
 
   <article class="article">
     
-    <span class="article-duration">12 min read</span>
+    <span class="article-duration">11 min read</span>
     
 
     <h1 class="article-title">Blackjack Optimized</h1>
@@ -86,24 +86,10 @@
 <h2>Core Questions</h2>
 <ol style="list-style-type: decimal">
 <li>What is the expected value of a blackjack hand?</li>
-<li>When is probability in the player’s favor?</li>
+<li>How do the cards on the table influence the probability of a player winning?</li>
 <li>How can a player maximize their expected value?</li>
 </ol>
 <pre class="r"><code>dat1 &lt;- read_csv(&quot;data/blkjckhands.csv&quot;) </code></pre>
-<pre><code>## Warning: Missing column names filled in: &#39;X1&#39; [1]</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   .default = col_double(),
-##   PlayerNo = col_character(),
-##   blkjck = col_character(),
-##   winloss = col_character(),
-##   plybustbeat = col_character(),
-##   dlbustbeat = col_character()
-## )</code></pre>
-<pre><code>## See spec(...) for full column specifications.</code></pre>
-<pre><code>## Warning: 1 parsing failure.
-##    row col   expected    actual                   file
-## 898078  -- 21 columns 5 columns &#39;data/blkjckhands.csv&#39;</code></pre>
 </div>
 </div>
 <div id="exploratory-data-analysis" class="section level1">
@@ -153,13 +139,13 @@
        y = &quot;Frequency&quot;) +
   scale_x_discrete(limit = 1:11, breaks = 1:11)</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<pre class="r"><code>summary(dat1$dealcard1)</code></pre>
+<pre class="r"><code>summary(dat1$dealcard2)</code></pre>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
-##   1.000   5.000   8.000   7.171  10.000  11.000       1</code></pre>
-<pre class="r"><code>ggplot(dat1, aes(dealcard1)) +
+##    1.00    5.00    8.00    7.13   10.00   11.00       1</code></pre>
+<pre class="r"><code>ggplot(dat1, aes(dealcard2)) +
   geom_bar() +
-  labs(title = &quot;Frequency of Dealer Card 1&quot;,
-       x = &quot;Dealer Card 1&quot;,
+  labs(title = &quot;Frequency of Dealer Card 2&quot;,
+       x = &quot;Dealer Card 2&quot;,
        y = &quot;Frequency&quot;) +
   scale_x_discrete(limit = 1:11, breaks = 1:11)</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
@@ -192,13 +178,14 @@
 <pre class="r"><code>summary(dat1$dlwinamt)</code></pre>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
 ##   0.000   0.000   0.000   4.776  10.000  10.000       1</code></pre>
-<p>In a blackjack game, like the one being analyzed, each player receives two cards. Possible values range from 1-11 for each card, and 2-21 for the total hand value. The dealer is also dealt two cards, however one is face down. This forces the player to make a decision based on limited information. The player must choose to hit or stand.* All while playing against the dealer who has a hidden card. Another catch is that the dealer must stand on any 17. The object of the game is to beat the dealer by gaining a hand valued higher than theirs without exceeding 21. Above, I have calculated the summary statistics for important values. The values included will be the basis for my analysis. The trade secrets of blackjack known by players as “The Book” hides in the numbers shown above.</p>
+<p>In a blackjack game, like the one being analyzed, each player receives two cards. Possible values range from 1-11 for each card, and 2-21 for the total hand value. The dealer is also dealt two cards, however one is face down. This forces the player to make a decision based on limited information. The player must choose to hit or stand.* All while playing against the dealer who has a hidden card. Another catch is that the dealer must stand on any 17. The object of the game is to beat the dealer by gaining a hand valued higher than theirs without exceeding 21. Above, I have calculated the summary statistics for important values. The values included will be the basis for my analysis.</p>
 <p>*Other options that I won’t dive into for purposes of this analysis: double down, split.</p>
 </div>
 <div id="data-analysis" class="section level1">
 <h1>Data Analysis</h1>
 <div id="question-1" class="section level2">
 <h2>Question 1</h2>
+<p>What is the expected value of a blackjack hand?</p>
 <p>Expected value is a very useful tool for determining the underlying value in a game or market. Blackjack is no different. To calculate expected value multiply the monetary win/loss by the chance that thing happens. Then add up all the individual values to determine your expected value for the game. Below I have calculated the expected value of this blackjack data.</p>
 <pre class="r"><code># percent chance dealer bust
 # percent chance of plwin
@@ -265,7 +252,7 @@ house_edge_pct</code></pre>
 </div>
 <div id="question-2" class="section level2">
 <h2>Question 2</h2>
-<p>When is probability in the player’s favor?</p>
+<p>How do the cards on the table influence the probability of a player winning?</p>
 <pre class="r"><code># add sumofcards vs pct win/loss
 
 x1 &lt;- c(20, 25)
