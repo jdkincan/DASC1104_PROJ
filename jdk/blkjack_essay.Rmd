@@ -55,13 +55,13 @@ Here we see that out of 19 possible starting card sums the player is only favore
 
 add chance of player win vs player card sum
 
-From this distribution we can see that a player's primary goal should be to obtain a card sum greater than x. Players are only favored in x of x possibillites. Considering the probability cliff, a player should hit on any card sum value less than x.  
+  From this distribution we can see that a player's primary goal should be to obtain a card sum greater than 17. Players are only favored in 3 of 12 possibilities. Considering the probability cliff, a player should hit on any card sum value less than 17. The player should not hit on the 17 because their chances of busting are far higher than obtaining a good hand. Additionally, a player's chance of a push are very good when holding a 17. 
 
 add percentage of bust by deal hand 
 
 percent player win vs percent dealer bust by dealer up card
 
-  A bust occurs when the card value sum is greater than 21, and the result is an automatic loss. Therefore, the probability of a dealer bust, given their face up card, is the second most important factor when considering a player's action in a blackjack hand. (Their starting card sum being the most important.) If the dealer has x to x then the player should consider staying if their hand value is greater than x. IF CHANCE OF BUST IS HIGHER THAN CHANCE OF AVG PLAYER WIN. OR IF CHANCE OF BUST IS HIGHER THAN THE PLAYERS CHANCE TO WIN ON THAT CARD SUM (EXCLUDING BELOW 12)
+  A bust occurs when the card value sum is greater than 21, and the result is an automatic loss. Therefore, the probability of a dealer bust, given their face up card, is the second most important factor when considering a player's action in a blackjack hand. (Their starting card sum being the most important.) If the dealer is showing a 2 to 6 then the player should consider staying if their hand value is greater than 11 but less than 17. The dealer has over a 30% chance of an automatic loss here, which is higher than your percent win chance for some of those 12-16 starting hands. The chance of winning by a dealer bust is therefore greater than their chance of winning outright. So, if the player is attempting to maximize their value they would stay on these hands. 
   
   If a player bases their decision solely off their card value sum they would be playing a sub optimal hand. This is when "The Book" really starts to appear. 
 
@@ -70,9 +70,7 @@ percent player win vs percent dealer bust by dealer up card
 
 __Considering the conditional probabilities what decision should the player make?__
 
-table 
-  deal up card vs play 2 card sum 
-cell value: hit or stand 
+
 
   Based upon all of the probabilities explored above I have computed a basic optimal strategy similar to "The Book". The table is a wealth of information and can guide a player through any blackjack situation. This is the best way to play the game, and will net a player the greatest possible profit. 
 
