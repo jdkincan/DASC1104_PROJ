@@ -64,7 +64,7 @@
 
   <article class="article">
     
-    <span class="article-duration">11 min read</span>
+    <span class="article-duration">12 min read</span>
     
 
     <h1 class="article-title">Blackjack Optimized</h1>
@@ -363,14 +363,58 @@ glimpse(dlhand_win)</code></pre>
 <pre class="r"><code>plot3</code></pre>
 <pre><code>## Warning: Removed 1 rows containing missing values (position_stack).</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
-<pre class="r"><code># plot4
-# x is dealcard2 and y is dlbustbeat (filter )
+<pre class="r"><code># add sumofcards vs pct win/loss
 
-# plot5
-# x is ply2cardsum y is percent plybustbeat (filter into different categories)</code></pre>
-</div>
-<div id="question-3" class="section level2">
-<h2>Question 3</h2>
+x1 &lt;- c(20, 25)
+
+plhand_count_sum &lt;- dat1 %&gt;%
+  group_by(sumofcards) %&gt;%
+  summarise(count = n(), .groups = &quot;keep&quot;)
+  
+plhand_win_sum &lt;- dat1 %&gt;%
+  group_by(sumofcards) %&gt;%
+  filter(plwinamt %in% x1) %&gt;%
+  summarise(win_count = n(), .groups = &quot;keep&quot;)
+
+plwin_pct_sum &lt;- plhand_count_sum %&gt;%
+  left_join(plhand_win_sum) %&gt;%
+  summarise(percent_win = win_count / count, .groups = &quot;keep&quot;)</code></pre>
+<pre><code>## Joining, by = &quot;sumofcards&quot;</code></pre>
+<pre class="r"><code>plot133 &lt;- ggplot(plwin_pct_sum, aes(sumofcards, percent_win * 100)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  labs(title = &quot;Chance of Win vs. 2 Card Sum&quot;, 
+       x = &quot;Player 2 Card Sum&quot;,
+       y = &quot;Player Win Percentage&quot;) +
+  scale_x_discrete(limits = (2:21), breaks = 1:21) +
+  geom_hline(yintercept = 50)</code></pre>
+<pre><code>## Warning: Continuous limits supplied to discrete scale.
+## Did you mean `limits = factor(...)` or `scale_*_continuous()`?</code></pre>
+<pre class="r"><code>plot133</code></pre>
+<pre><code>## Warning: Removed 7 rows containing missing values (position_stack).</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<pre class="r"><code>x2 &lt;- c(2, 3, 4, 5, 6, 7, 8, 9, 10)
+
+dl_count &lt;- dat1 %&gt;%
+  group_by(dealcard2) %&gt;%
+  summarise(count = n(), .groups = &quot;keep&quot;)
+
+dl_bust_sum &lt;- dat1 %&gt;%
+  group_by(dealcard2) %&gt;%
+  filter(dlbustbeat == &quot;Bust&quot;, dealcard2 %in% x2) %&gt;%
+  summarise(bust_count = n(),  .groups = &quot;keep&quot;)
+
+dl_bust_pct &lt;- dl_bust_sum %&gt;%
+  left_join(dl_count, by = &quot;dealcard2&quot;) %&gt;%
+  summarise(percent_win = bust_count / count, .groups = &quot;keep&quot;)
+
+plot134 &lt;- ggplot(dl_bust_pct, aes(dealcard2, percent_win * 100, fill = percent_win)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  labs(title = &quot;Dealer Bust Probability By Face Up Card&quot;, x = &quot;Dealer Face Up Card&quot;, y = &quot;Bust Percentage&quot;) +
+  scale_x_continuous(breaks = 2:10) +
+  theme(legend.title = element_blank())
+plot134</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-20-1.png" width="672" />
+## Question 3</p>
 <p>How can a player maximize their expected value?</p>
 <pre class="r"><code>#Determine hit or stand based on ply2cardsum
 

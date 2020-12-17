@@ -104,11 +104,7 @@ shots10_pct &lt;- shots10_2pt %&gt;%
 shots19_pct &lt;- shots19_2pt %&gt;%
   full_join(shots19_3pt, by = &quot;SHOT_DISTANCE&quot;)</code></pre>
 <p>After examining the dataset, lets draw out some information and plot it over SHOT_DISTANCE by season. The above code chunk’s purpose is to efficiently store new variables that I created. These variables are shot percentage by distance, and points per shot by distance. Both of these values are critical in explaining how <em>“Sprawlball”</em> works, and why it is so effective.</p>
-<pre class="r"><code># 2010 EDA1
-#NOTES 
- #invvestigate labels
- #combine charts?
-N1 &lt;- (0:23)
+<pre class="r"><code>N1 &lt;- (0:23)
 N2 &lt;- c(10, 30, 50, 70)
 
 plot1 &lt;- ggplot(shots10_pct,
@@ -241,8 +237,10 @@ pie_dat19 &lt;- data.frame(
                 &quot;Right Corner 3&quot;,
                 &quot;Backcourt&quot;),
   percent = c(pt19, ra19, mr19, lc19, ab19, rc19, bc19)
-)</code></pre>
-<pre class="r"><code>plot5 &lt;- ggplot(pie_dat10, aes(x=&quot;&quot;, y = percent, fill = shot_zone)) +
+)
+
+
+plot5 &lt;- ggplot(pie_dat10, aes(x=&quot;&quot;, y = percent, fill = shot_zone)) +
   geom_bar(stat = &quot;identity&quot;, width = 3, color = &quot;white&quot;) +
   coord_polar(&quot;y&quot;, start=0) +
   theme_void() + 
@@ -259,7 +257,7 @@ plot6 &lt;- ggplot(pie_dat19, aes(x=&quot;&quot;, y = percent, fill = shot_zone)
   scale_fill_brewer(palette=&quot;Pastel1&quot;)
 
 plot5 + plot6</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>Here you can see how frequently players shoot in certain zones relative to one another. The drastic change seen in this graph is yet another fundamental component of <em>“Sprawlball”</em>, that connects right back to the first set of plots. As mentioned, the shooting percentage does not decrease by a significant amount per foot once you go outside of the restricted area. This explains the contraction in the “Mid-Range” and the near doubling of the “Above the Break 3”. Why do more for less? Is probably a question players have asked themselves. Stepping back to launch an open 3-pointer has become the most profitable play in basketball. In the next section I’ll get specific on what exactly this strategy is and why it is so popular today.</p>
 </div>
 <div id="data-analysis" class="section level1">
@@ -296,7 +294,7 @@ layout &lt;- &#39;
 AB
 &#39;
 wrap_plots(A = plot7, B = plot8, design = layout)</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>That is “Sprawlball”. This shooting distribution is essential to the strategy. At a basic level it attempts to spread the floor in order to take as many high value shots as possible. Here we see a clearly defined transition over just 9 years, with shots becoming more concentrated around high value areas. Without so much as a picture to help plot the 3-point line, it’s there. In the 2019 data, the line appears in stark contrast with the rest of the floor. We are now realizing the full potential of what the line brings to the game. As players get better at shooting long shots the value of a 3-pointer continues to rise. This information is clearly displayed in the plots below, and will be further explored throughout the analysis.</p>
 </div>
 <div id="question-2" class="section level2">
@@ -427,17 +425,16 @@ plot11 &lt;- ggplot(ptsperdat, aes(x = shot_zone,
         legend.title = element_blank())
 
 plot9 + plot10</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <pre class="r"><code>plot11</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-8-2.png" width="672" /></p>
+<p><img src="index_files/figure-html/unnamed-chunk-7-2.png" width="672" /></p>
 <p>These plots clearly explains why the distribution exposed in Question 1 changed so drastically. 3-pointers and layups are the best bang for your buck, by a lot. The charts combine to paint a powerful picture of why teams shifted their focus. The difference in value was always there. However, teams failed to take advantage of it until recently. Again, similar to <em>“Moneyball”</em>; the value always existed, it just had to be discovered.</p>
 </div>
 </div>
 <div id="question-3" class="section level1">
 <h1>Question 3</h1>
 <p><strong>How can proper strategy execution be quantified?</strong></p>
-<pre class="r"><code># create statistic that combines 
-zones1 &lt;- c(&quot;Restricted Area&quot;,
+<pre class="r"><code>zones1 &lt;- c(&quot;Restricted Area&quot;,
             &quot;Right Corner 3&quot;,
             &quot;Left Corner 3&quot;,
             &quot;Above the Break 3&quot;)

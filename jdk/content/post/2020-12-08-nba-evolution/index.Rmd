@@ -100,10 +100,6 @@ shots19_pct <- shots19_2pt %>%
   After examining the dataset, lets draw out some information and plot it over SHOT_DISTANCE by season. The above code chunk's purpose is to efficiently store new variables that I created. These variables are shot percentage by distance, and points per shot by distance. Both of these values are critical in explaining how _"Sprawlball"_ works, and why it is so effective. 
 
 ```{r, warning=FALSE}
-# 2010 EDA1
-#NOTES 
- #invvestigate labels
- #combine charts?
 N1 <- (0:23)
 N2 <- c(10, 30, 50, 70)
 
@@ -240,9 +236,8 @@ pie_dat19 <- data.frame(
                 "Backcourt"),
   percent = c(pt19, ra19, mr19, lc19, ab19, rc19, bc19)
 )
-```
 
-```{r}
+
 plot5 <- ggplot(pie_dat10, aes(x="", y = percent, fill = shot_zone)) +
   geom_bar(stat = "identity", width = 3, color = "white") +
   coord_polar("y", start=0) +
@@ -447,7 +442,6 @@ plot11
 __How can proper strategy execution be quantified?__
 
 ```{r}
-# create statistic that combines 
 zones1 <- c("Restricted Area",
             "Right Corner 3",
             "Left Corner 3",
