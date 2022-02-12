@@ -1,0 +1,6 @@
+[submodule "congo"]
+	path = congo
+	url = https://github.com/jpanther/congo.git
+[submodule "jdk/themes/congo"]
+	path = jdk/themes/congo
+	url = https://github.com/jpanther/congo.git
